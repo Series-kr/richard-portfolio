@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Project {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  title          String
+  shortDesc      String
+  problem        String
+  solution       String
+  impact         String
+  techStack      String
+  category       String
+  featured       Boolean  @default(false)
+  order          Int      @default(0)
+  imageUrl       String?
+  screenshotUrls String?
+  githubUrl      String?
+  liveUrl        String?
+  status         String   @default("published")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model BlogPost {
+  id             String    @id @default(cuid())
+  slug           String    @unique
+  title          String
+  excerpt        String
+  content        String
+  coverImage     String?
+  category       String
+  tags           String
+  seoTitle       String
+  seoDescription String
+  seoKeywords    String
+  readTimeMinutes Int      @default(5)
+  generatedByAI  Boolean  @default(false)
+  aiModel        String?
+  published      Boolean  @default(false)
+  publishedAt    DateTime?
+  views          Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Skill {
+  id        String   @id @default(cuid())
+  name      String
+  category  String
+  level     Int      @default(80)
+  order     Int      @default(0)
+  icon      String?
+  createdAt DateTime @default(now())
+}
+
+model Experience {
+  id          String    @id @default(cuid())
+  company     String
+  role        String
+  roleType    String
+  location    String
+  description String
+  bullets     String
+  techStack   String
+  startDate   DateTime
+  endDate     DateTime?
+  current     Boolean  @default(false)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model GitHubRepo {
+  id          String   @id @default(cuid())
+  repoId      Int      @unique
+  name        String
+  fullName    String
+  description String?
+  url         String
+  homepage    String?
+  language    String?
+  stars       Int      @default(0)
+  forks       Int      @default(0)
+  topics      String?
+  isPrivate   Boolean  @default(false)
+  pinned      Boolean  @default(false)
+  showOnSite  Boolean  @default(true)
+  syncedAt    DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
