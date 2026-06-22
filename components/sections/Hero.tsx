@@ -2,136 +2,224 @@
 
 import { motion } from "framer-motion"
 import Link from "next/link"
+import { Button } from "antd"
+import { ArrowRightOutlined } from "@ant-design/icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faBriefcase, faArrowRight, faChevronDown } from "@fortawesome/free-solid-svg-icons"
+import { faBriefcase, faChevronDown } from "@fortawesome/free-solid-svg-icons"
 import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons"
+import { brand } from "@/lib/theme"
+
+const socials = [
+  { href: "https://github.com/Series-kr", icon: faGithub, label: "GitHub" },
+  { href: "https://linkedin.com/in/richardkorankye", icon: faLinkedin, label: "LinkedIn" },
+]
 
 export function Hero() {
   return (
-    <section className="relative min-h-[920px] flex flex-col items-center justify-center text-center px-6 dot-grid">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#080B10]/50 to-[#080B10] pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#45f1c3]/5 rounded-full blur-[120px]" />
+    <section
+      style={{
+        position: "relative",
+        minHeight: 880,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        padding: "0 24px",
+      }}
+    >
+      <div className="grid-bg" style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />
+      <div
+        style={{
+          position: "absolute",
+          top: "42%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 620,
+          height: 620,
+          background: "rgba(79, 70, 229, 0.10)",
+          borderRadius: "50%",
+          filter: "blur(130px)",
+          pointerEvents: "none",
+        }}
+      />
 
-      <div className="relative z-10 max-w-4xl">
-        {/* Available badge */}
+      <div style={{ position: "relative", zIndex: 10, maxWidth: 880 }}>
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="inline-flex items-center gap-2 bg-[#121c2a] border border-[#1C2330] px-4 py-1.5 rounded-full mb-8"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 8,
+            background: brand.bgContainer,
+            border: `1px solid ${brand.border}`,
+            padding: "6px 16px",
+            borderRadius: 999,
+            marginBottom: 32,
+          }}
         >
-          <span className="w-2 h-2 rounded-full bg-[#45f1c3] pulse-teal shadow-[0_0_8px_#45f1c3]" />
-          <span className="font-[family-name:var(--font-mono)] text-[11px] font-semibold text-[#bacac2] uppercase tracking-[0.1em]">
+          <span
+            className="pulse-dot"
+            style={{ width: 8, height: 8, borderRadius: "50%", background: brand.success }}
+          />
+          <span
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 11,
+              fontWeight: 600,
+              color: brand.textSecondary,
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
+            }}
+          >
             Open to opportunities
           </span>
         </motion.div>
 
-        {/* Headline */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="font-[family-name:var(--font-syne)] text-[48px] md:text-[72px] font-bold text-[#d9e3f7] mb-4 tracking-tight leading-[1.1]"
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "clamp(44px, 8vw, 72px)",
+            fontWeight: 700,
+            color: brand.text,
+            margin: "0 0 16px",
+            lineHeight: 1.1,
+            letterSpacing: "-0.03em",
+          }}
         >
-          I build systems that{" "}
-          <span className="text-[#45f1c3]">actually work.</span>
+          I build systems that <span style={{ color: brand.primary }}>scale.</span>
         </motion.h1>
 
-        {/* Subheading */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="font-[family-name:var(--font-dm-sans)] text-[16px] md:text-[18px] text-[#bacac2] mb-6 max-w-2xl mx-auto leading-relaxed"
+          style={{
+            fontSize: 18,
+            color: brand.textSecondary,
+            margin: "0 auto 24px",
+            maxWidth: 640,
+            lineHeight: 1.7,
+          }}
         >
-          Senior Full Stack Engineer based in Accra, Ghana with 7+ years of experience building SaaS
-          platforms, ERP systems, and AI-integrated applications for real businesses.
+          Senior Full-Stack Engineer & Systems Architect. 7+ years designing and shipping
+          production-grade platforms for EdTech, FinTech, and enterprise markets.
         </motion.p>
 
-        {/* Meta info */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.35 }}
-          className="flex items-center justify-center gap-6 mb-12 text-[#85948d] font-[family-name:var(--font-mono)] text-[12px]"
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 12,
+            color: brand.textMuted,
+            marginBottom: 40,
+          }}
         >
-          <span>Node.js · PHP/Laravel · React · PostgreSQL</span>
-          <span className="hidden md:inline text-[#1C2330]">|</span>
-          <span className="hidden md:inline">Docker · AWS · Claude AI</span>
+          Node.js · PHP/Laravel · React · PostgreSQL · Docker · AWS · Claude AI
         </motion.div>
 
-        {/* CTAs */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="flex flex-col md:flex-row items-center justify-center gap-4 mb-12"
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 16,
+            marginBottom: 48,
+          }}
         >
-          <Link
-            href="#projects"
-            className="w-full md:w-auto inline-flex items-center justify-center gap-2 bg-[#00d4a8] text-[#00382a] font-bold px-10 py-4 rounded-lg active:scale-95 transition-all hover:shadow-[0_0_30px_rgba(0,212,168,0.3)] font-[family-name:var(--font-dm-sans)]"
-          >
-            <FontAwesomeIcon icon={faBriefcase} className="w-4 h-4" />
-            View My Work
+          <Link href="#projects">
+            <Button
+              type="primary"
+              size="large"
+              icon={<FontAwesomeIcon icon={faBriefcase} />}
+            >
+              See My Work
+            </Button>
           </Link>
-          <Link
-            href="/blog"
-            className="w-full md:w-auto inline-flex items-center justify-center gap-2 bg-transparent border border-[#3b4a44]/60 text-[#d9e3f7] font-bold px-10 py-4 rounded-lg hover:bg-[#212a39] transition-all active:scale-95 font-[family-name:var(--font-dm-sans)]"
-          >
-            Read My Blog
-            <FontAwesomeIcon icon={faArrowRight} className="w-4 h-4" />
+          <Link href="/#contact">
+            <Button size="large" icon={<ArrowRightOutlined />} iconPosition="end">
+              Get In Touch
+            </Button>
           </Link>
         </motion.div>
 
-        {/* Social links */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.6 }}
-          className="flex items-center justify-center gap-5"
+          style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20 }}
         >
-          <a
-            href="https://github.com/Series-kr"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-10 h-10 rounded-lg bg-[#121c2a] border border-[#1C2330] flex items-center justify-center text-[#bacac2] hover:text-[#45f1c3] hover:border-[#45f1c3]/40 transition-all"
-            aria-label="GitHub"
-          >
-            <FontAwesomeIcon icon={faGithub} className="w-5 h-5" />
-          </a>
-          <a
-            href="https://linkedin.com/in/richardkorankye"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-10 h-10 rounded-lg bg-[#121c2a] border border-[#1C2330] flex items-center justify-center text-[#bacac2] hover:text-[#45f1c3] hover:border-[#45f1c3]/40 transition-all"
-            aria-label="LinkedIn"
-          >
-            <FontAwesomeIcon icon={faLinkedin} className="w-5 h-5" />
-          </a>
+          {socials.map((s) => (
+            <a
+              key={s.label}
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={s.label}
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 8,
+                background: brand.bgContainer,
+                border: `1px solid ${brand.border}`,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: brand.textSecondary,
+              }}
+            >
+              <FontAwesomeIcon icon={s.icon} />
+            </a>
+          ))}
           <a
             href="mailto:richardkorankye07@gmail.com"
-            className="font-[family-name:var(--font-mono)] text-[12px] text-[#85948d] hover:text-[#45f1c3] transition-colors uppercase tracking-widest"
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 12,
+              color: brand.textMuted,
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
+            }}
           >
             richardkorankye07@gmail.com
           </a>
         </motion.div>
       </div>
 
-      {/* Scroll indicator */}
       <motion.a
         href="#projects"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 1.0 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-[#85948d] hover:text-[#45f1c3] transition-colors"
+        transition={{ duration: 0.6, delay: 1 }}
         aria-label="Scroll to projects"
+        style={{
+          position: "absolute",
+          bottom: 32,
+          left: "50%",
+          transform: "translateX(-50%)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 6,
+          color: brand.textMuted,
+        }}
       >
-        <span className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-widest">Scroll</span>
-        <motion.div
-          animate={{ y: [0, 4, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <FontAwesomeIcon icon={faChevronDown} className="w-3.5 h-3.5" />
+        <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.2em" }}>
+          Scroll
+        </span>
+        <motion.div animate={{ y: [0, 4, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}>
+          <FontAwesomeIcon icon={faChevronDown} />
         </motion.div>
       </motion.a>
     </section>

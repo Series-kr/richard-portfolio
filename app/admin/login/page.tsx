@@ -3,27 +3,24 @@
 import { useState } from "react"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { Card, Form, Input, Button, Alert } from "antd"
+import { brand } from "@/lib/theme"
+
+interface LoginValues {
+  email: string
+  password: string
+}
 
 export default function AdminLoginPage() {
   const router = useRouter()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const onFinish = async (values: LoginValues) => {
     setLoading(true)
     setError("")
-
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    })
-
+    const result = await signIn("credentials", { ...values, redirect: false })
     setLoading(false)
-
     if (result?.error) {
       setError("Invalid credentials. Please try again.")
     } else {
@@ -32,66 +29,32 @@ export default function AdminLoginPage() {
     }
   }
 
-  const inputClass =
-    "w-full bg-[#16202e] border border-[#1C2330] rounded-lg px-4 py-3 text-[#d9e3f7] font-[family-name:var(--font-dm-sans)] text-[16px] focus:outline-none focus:border-[#45f1c3] focus:ring-1 focus:ring-[#45f1c3]/20 transition-colors"
-
   return (
-    <div className="min-h-screen bg-[#080B10] flex items-center justify-center px-4 dot-grid">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="font-[family-name:var(--font-syne)] text-5xl font-bold text-[#45f1c3] tracking-tighter mb-2">
+    <div className="grid-bg" style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+      <div style={{ width: "100%", maxWidth: 400 }}>
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
+          <div style={{ fontFamily: "var(--font-display)", fontSize: 48, fontWeight: 700, color: brand.primary, letterSpacing: "-0.05em", marginBottom: 8 }}>
             RK
           </div>
-          <p className="font-[family-name:var(--font-mono)] text-[11px] text-[#bacac2] uppercase tracking-widest">
-            Admin Login
+          <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: brand.textSecondary, textTransform: "uppercase", letterSpacing: "0.15em" }}>
+            Operations Console
           </p>
         </div>
 
-        <div className="bg-[#091421] border border-[#1C2330] rounded-xl p-8">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="font-[family-name:var(--font-mono)] text-[10px] font-semibold text-[#bacac2] uppercase tracking-widest block mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={inputClass}
-                placeholder="admin@example.com"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="font-[family-name:var(--font-mono)] text-[10px] font-semibold text-[#bacac2] uppercase tracking-widest block mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={inputClass}
-                placeholder="••••••••"
-                required
-              />
-            </div>
-
-            {error && (
-              <p className="text-[#ffb4ab] font-[family-name:var(--font-dm-sans)] text-[14px]">
-                {error}
-              </p>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-[#00d4a8] text-[#00382a] font-bold py-3 rounded-lg transition-all hover:shadow-[0_0_20px_rgba(0,212,168,0.3)] active:scale-[0.98] disabled:opacity-50 font-[family-name:var(--font-dm-sans)] text-[16px]"
-            >
-              {loading ? "Signing in..." : "Sign In"}
-            </button>
-          </form>
-        </div>
+        <Card variant="outlined" style={{ borderColor: brand.border }} styles={{ body: { padding: 32 } }}>
+          {error && <Alert type="error" message={error} showIcon style={{ marginBottom: 16 }} />}
+          <Form layout="vertical" requiredMark={false} onFinish={onFinish}>
+            <Form.Item name="email" label="Email" rules={[{ required: true, type: "email", message: "Enter a valid email" }]}>
+              <Input size="large" placeholder="admin@example.com" autoComplete="username" />
+            </Form.Item>
+            <Form.Item name="password" label="Password" rules={[{ required: true, message: "Password is required" }]}>
+              <Input.Password size="large" placeholder="••••••••" autoComplete="current-password" />
+            </Form.Item>
+            <Button type="primary" size="large" htmlType="submit" loading={loading} block>
+              Sign In
+            </Button>
+          </Form>
+        </Card>
       </div>
     </div>
   )

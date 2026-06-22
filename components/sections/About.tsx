@@ -1,6 +1,10 @@
+"use client"
+
+import { Card, Button, Divider } from "antd"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faMapPin, faWifi, faLaptopCode, faGraduationCap, faLanguage, faDownload } from "@fortawesome/free-solid-svg-icons"
 import { AnimatedSection } from "@/components/shared/AnimatedSection"
+import { brand } from "@/lib/theme"
 
 const quickFacts = [
   { icon: faMapPin, label: "Accra, Ghana (GMT+0)" },
@@ -10,80 +14,95 @@ const quickFacts = [
   { icon: faLanguage, label: "English · Akan (Twi)" },
 ]
 
+const para: React.CSSProperties = { fontSize: 16, color: brand.textSecondary, lineHeight: 1.75, marginBottom: 20 }
+
 export function About() {
   return (
-    <section className="py-16 max-w-[1200px] mx-auto px-6 md:px-8 grid md:grid-cols-2 gap-16 items-center" id="about">
+    <section
+      id="about"
+      style={{
+        padding: "64px 24px",
+        maxWidth: 1200,
+        margin: "0 auto",
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+        gap: 64,
+        alignItems: "center",
+      }}
+    >
       <AnimatedSection direction="left">
-        <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold text-[#45f1c3] uppercase tracking-[0.15em] mb-4">
+        <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 600, color: brand.primary, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 16 }}>
           About
         </p>
-        <h2 className="font-[family-name:var(--font-syne)] text-[32px] md:text-[36px] font-bold text-[#d9e3f7] mb-6 leading-tight">
+        <h2 style={{ fontFamily: "var(--font-display)", fontSize: 34, fontWeight: 700, color: brand.text, marginBottom: 24, lineHeight: 1.2 }}>
           More than code — I build things businesses depend on.
         </h2>
-        <div className="space-y-5">
-          <p className="font-[family-name:var(--font-dm-sans)] text-[16px] text-[#bacac2] leading-relaxed">
-            I am a Senior Full Stack Software Engineer based in Accra, Ghana, with over 7 years of experience shipping
-            production software for real businesses. I have built everything from multi-tenant SaaS platforms and school
-            ERP systems to AI-powered tools and enterprise applications — owning the full stack from database schema to deployment.
-          </p>
-          <p className="font-[family-name:var(--font-dm-sans)] text-[16px] text-[#bacac2] leading-relaxed">
-            What drives me is the architecture layer — how systems are structured, how they handle scale, and how
-            engineering decisions serve real business outcomes. I work with teams that care about craft: clean,
-            maintainable code, thoughtful system design, and software that holds up in production.
-          </p>
-          <p className="font-[family-name:var(--font-dm-sans)] text-[16px] text-[#bacac2] leading-relaxed">
-            Currently engineering at JiBiFlow/BreakInvent LLC and leading IT at Virtutor Online Ghana. I am open to
-            senior and lead engineering roles — locally in Accra and internationally via remote.
-          </p>
-        </div>
+        <p style={para}>
+          I am a Senior Full-Stack Software Engineer based in Accra, Ghana, with over 7 years of experience shipping
+          production software for real businesses. I have built everything from multi-tenant SaaS platforms and school
+          ERP systems to AI-powered tools and enterprise applications — owning the full stack from database schema to deployment.
+        </p>
+        <p style={para}>
+          What drives me is the architecture layer — how systems are structured, how they handle scale, and how
+          engineering decisions serve real business outcomes. I work with teams that care about craft: clean,
+          maintainable code, thoughtful system design, and software that holds up in production.
+        </p>
+        <p style={{ ...para, marginBottom: 0 }}>
+          Currently engineering at JiBiFlow/BreakInvent LLC and leading IT at Virtutor Online Ghana. I am open to
+          senior and lead engineering roles — locally in Accra and internationally via remote.
+        </p>
       </AnimatedSection>
 
       <AnimatedSection direction="right">
-        <div className="bg-[#16202e] border border-[#1C2330] p-8 rounded-xl relative overflow-hidden group hover:border-[#45f1c3]/30 transition-colors duration-300">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-[#45f1c3]/5 rounded-full -translate-y-12 translate-x-12 blur-3xl" />
-
-          <div className="flex items-center gap-5 mb-8">
-            <div className="w-18 h-18 w-[72px] h-[72px] rounded-full border-2 border-[#45f1c3]/20 bg-[#212a39] flex items-center justify-center flex-shrink-0">
-              <span className="font-[family-name:var(--font-syne)] text-2xl font-bold text-[#45f1c3]">RK</span>
+        <Card variant="outlined" style={{ borderColor: brand.border }} styles={{ body: { padding: 32 } }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 28 }}>
+            <div
+              style={{
+                width: 72,
+                height: 72,
+                borderRadius: "50%",
+                border: `2px solid rgba(79, 70, 229, 0.3)`,
+                background: brand.bgElevated,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <span style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 700, color: brand.primary }}>RK</span>
             </div>
             <div>
-              <h3 className="font-[family-name:var(--font-dm-sans)] text-[18px] font-semibold text-[#d9e3f7]">
-                Richard Korankye
-              </h3>
-              <p className="font-[family-name:var(--font-dm-sans)] text-[14px] text-[#45f1c3]">
-                Senior Full Stack Engineer
-              </p>
-              <p className="font-[family-name:var(--font-mono)] text-[11px] text-[#85948d] mt-0.5">
+              <h3 style={{ fontSize: 18, fontWeight: 600, color: brand.text, margin: 0 }}>Richard Korankye</h3>
+              <p style={{ fontSize: 14, color: brand.primary, margin: "2px 0 0" }}>Senior Full-Stack Engineer</p>
+              <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: brand.textMuted, margin: "2px 0 0" }}>
                 richardkorankye07@gmail.com
               </p>
             </div>
           </div>
 
-          <div className="space-y-3.5">
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {quickFacts.map((fact) => (
-              <div key={fact.label} className="flex items-center gap-3 text-[#bacac2]">
-                <FontAwesomeIcon icon={fact.icon} className="w-3.5 h-3.5 text-[#45f1c3] flex-shrink-0" />
-                <span className="font-[family-name:var(--font-dm-sans)] text-[14px]">{fact.label}</span>
+              <div key={fact.label} style={{ display: "flex", alignItems: "center", gap: 12, color: brand.textSecondary }}>
+                <FontAwesomeIcon icon={fact.icon} style={{ color: brand.primary, width: 14 }} />
+                <span style={{ fontSize: 14 }}>{fact.label}</span>
               </div>
             ))}
           </div>
 
-          <div className="mt-7 pt-6 border-t border-[#1C2330] flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#45f1c3] pulse-teal" />
-              <span className="font-[family-name:var(--font-mono)] text-[11px] text-[#45f1c3] uppercase tracking-widest">
+          <Divider style={{ borderColor: brand.borderSubtle, margin: "24px 0" }} />
+
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span className="pulse-dot" style={{ width: 8, height: 8, borderRadius: "50%", background: brand.success }} />
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: brand.success, textTransform: "uppercase", letterSpacing: "0.12em" }}>
                 Open to opportunities
               </span>
             </div>
-            <a
-              href="#contact"
-              className="inline-flex items-center gap-1.5 font-[family-name:var(--font-dm-sans)] text-[13px] text-[#bacac2] hover:text-[#45f1c3] transition-colors"
-            >
-              <FontAwesomeIcon icon={faDownload} className="w-3 h-3" />
+            <Button type="link" href="#contact" icon={<FontAwesomeIcon icon={faDownload} />} style={{ padding: 0 }}>
               Download CV
-            </a>
+            </Button>
           </div>
-        </div>
+        </Card>
       </AnimatedSection>
     </section>
   )

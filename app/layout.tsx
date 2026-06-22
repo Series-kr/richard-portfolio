@@ -1,21 +1,21 @@
 import type { Metadata } from "next"
 import localFont from "next/font/local"
+import { Providers } from "./providers"
 import "./globals.css"
 
-const syne = localFont({
+const inter = localFont({
   src: [
-    { path: "../node_modules/@fontsource-variable/syne/files/syne-latin-wght-normal.woff2", style: "normal" },
+    { path: "../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2", style: "normal", weight: "100 900" },
   ],
-  variable: "--font-syne",
+  variable: "--font-inter",
   display: "swap",
 })
 
-const dmSans = localFont({
+const spaceGrotesk = localFont({
   src: [
-    { path: "../node_modules/@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2", style: "normal", weight: "100 900" },
-    { path: "../node_modules/@fontsource-variable/dm-sans/files/dm-sans-latin-wght-italic.woff2", style: "italic", weight: "100 900" },
+    { path: "../node_modules/@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2", style: "normal", weight: "300 700" },
   ],
-  variable: "--font-dm-sans",
+  variable: "--font-display",
   display: "swap",
 })
 
@@ -84,8 +84,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${syne.variable} ${dmSans.variable} ${jetbrainsMono.variable}`}>
-      <body className="antialiased" suppressHydrationWarning>{children}</body>
+    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
+      <body suppressHydrationWarning>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   )
 }

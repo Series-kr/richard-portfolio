@@ -1,19 +1,23 @@
+"use client"
+
+import { Row, Col, Card } from "antd"
 import { AnimatedSection } from "@/components/shared/AnimatedSection"
 import { SectionHeader } from "@/components/shared/SectionHeader"
 import { TechBadge } from "@/components/shared/TechBadge"
+import { brand } from "@/lib/theme"
 import type { Skill } from "@prisma/client"
 
 interface Props {
   skills: Skill[]
 }
 
-const categoryConfig: Record<string, { icon: string; iconColor: string; bgColor: string }> = {
-  Frontend: { icon: "🖥️", iconColor: "text-[#45f1c3]", bgColor: "bg-[#45f1c3]/10" },
-  Backend: { icon: "⚙️", iconColor: "text-[#ffcea6]", bgColor: "bg-[#ffcea6]/10" },
-  Database: { icon: "🗄️", iconColor: "text-[#45f1c3]", bgColor: "bg-[#45f1c3]/10" },
-  DevOps: { icon: "☁️", iconColor: "text-[#45f1c3]", bgColor: "bg-[#45f1c3]/10" },
-  AI: { icon: "🤖", iconColor: "text-[#ffcea6]", bgColor: "bg-[#ffcea6]/10" },
-  Practices: { icon: "📐", iconColor: "text-[#45f1c3]", bgColor: "bg-[#45f1c3]/10" },
+const categoryIcon: Record<string, string> = {
+  Frontend: "🖥️",
+  Backend: "⚙️",
+  Database: "🗄️",
+  DevOps: "☁️",
+  AI: "🤖",
+  Practices: "📐",
 }
 
 export function Skills({ skills }: Props) {
@@ -28,36 +32,41 @@ export function Skills({ skills }: Props) {
   )
 
   return (
-    <section className="py-16 bg-[#050f1c]" id="stack">
-      <div className="max-w-[1200px] mx-auto px-6 md:px-8 lg:px-16">
-        <SectionHeader
-          title="My Technical Arsenal"
-          subtitle="Precision tools for modern engineering challenges."
-          center
-        />
+    <section id="stack" style={{ padding: "64px 24px", background: "#0B1120" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <SectionHeader title="My Technical Arsenal" subtitle="Precision tools for modern engineering challenges." center />
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {categories.map((category, i) => {
-            const config = categoryConfig[category] ?? categoryConfig.Frontend
-            return (
-              <AnimatedSection key={category} delay={i * 0.08}>
-                <div className="bg-[#091421] border border-[#1C2330] p-6 rounded-xl active-glow transition-all duration-300 h-full">
-                  <div className={`w-12 h-12 ${config.bgColor} rounded-lg flex items-center justify-center mb-6 text-2xl`}>
-                    {config.icon}
+        <Row gutter={[24, 24]}>
+          {categories.map((category, i) => (
+            <Col key={category} xs={24} md={8}>
+              <AnimatedSection delay={i * 0.08}>
+                <Card variant="outlined" style={{ height: "100%", borderColor: brand.border }} styles={{ body: { padding: 24 } }}>
+                  <div
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: 8,
+                      background: "rgba(79, 70, 229, 0.12)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 24,
+                      marginBottom: 24,
+                    }}
+                  >
+                    {categoryIcon[category] ?? "🛠️"}
                   </div>
-                  <h3 className="font-[family-name:var(--font-dm-sans)] text-[18px] font-semibold text-[#d9e3f7] mb-4">
-                    {category}
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
+                  <h3 style={{ fontSize: 18, fontWeight: 600, color: brand.text, marginBottom: 16 }}>{category}</h3>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                     {byCategory[category].map((skill) => (
                       <TechBadge key={skill.id} name={skill.name} />
                     ))}
                   </div>
-                </div>
+                </Card>
               </AnimatedSection>
-            )
-          })}
-        </div>
+            </Col>
+          ))}
+        </Row>
       </div>
     </section>
   )

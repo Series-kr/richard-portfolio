@@ -1,6 +1,10 @@
-import Link from "next/link"
+"use client"
+
+import { Card, Tag } from "antd"
+import { StarFilled, ForkOutlined, GithubOutlined } from "@ant-design/icons"
 import { AnimatedSection } from "@/components/shared/AnimatedSection"
 import { parseJsonArray } from "@/lib/utils"
+import { brand } from "@/lib/theme"
 import type { GitHubRepo } from "@prisma/client"
 
 interface Props {
@@ -21,85 +25,76 @@ export function GitHubSection({ repos }: Props) {
   if (repos.length === 0) return null
 
   return (
-    <section className="py-16 bg-[#050f1c] border-y border-[#1C2330]/60 overflow-hidden">
-      <div className="max-w-[1200px] mx-auto px-6 md:px-8 lg:px-16">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <span className="text-3xl text-[#45f1c3]">⌘</span>
-            <h2 className="font-[family-name:var(--font-dm-sans)] text-[18px] font-semibold text-[#d9e3f7]">
-              Recent Open Source
-            </h2>
+    <section style={{ padding: "64px 24px", background: "#0B1120", borderTop: `1px solid ${brand.borderSubtle}`, borderBottom: `1px solid ${brand.borderSubtle}`, overflow: "hidden" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <GithubOutlined style={{ fontSize: 24, color: brand.primary }} />
+            <h2 style={{ fontSize: 18, fontWeight: 600, color: brand.text, margin: 0 }}>Recent Open Source</h2>
           </div>
           <a
             href={`https://github.com/${process.env.NEXT_PUBLIC_GITHUB_USERNAME || "Series-kr"}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-[family-name:var(--font-mono)] text-[11px] font-semibold text-[#bacac2] hover:text-[#45f1c3] transition-colors uppercase tracking-[0.1em]"
+            style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 600, color: brand.textSecondary, textTransform: "uppercase", letterSpacing: "0.1em" }}
           >
             View All Repos
           </a>
         </div>
 
-        <div className="flex gap-6 overflow-x-auto pb-4 no-scrollbar">
+        <div className="no-scrollbar" style={{ display: "flex", gap: 24, overflowX: "auto", paddingBottom: 16 }}>
           {repos.map((repo, i) => (
             <AnimatedSection key={repo.id} delay={i * 0.08}>
-              <a
-                href={repo.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="min-w-[320px] bg-[#091421] border border-[#1C2330] p-6 rounded-xl active-glow transition-all duration-300 block"
+              <Card
+                variant="outlined"
+                hoverable
+                style={{ minWidth: 320, borderColor: brand.border }}
+                styles={{ body: { padding: 24 } }}
+                onClick={() => window.open(repo.url, "_blank", "noopener,noreferrer")}
               >
-                <div className="flex items-center justify-between mb-4">
-                  <span className="font-[family-name:var(--font-dm-sans)] text-[16px] font-bold text-[#d9e3f7] truncate mr-2">
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, gap: 8 }}>
+                  <span style={{ fontSize: 16, fontWeight: 700, color: brand.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {repo.name}
                   </span>
                   {repo.language && (
-                    <span
-                      className="flex-shrink-0 px-2 py-0.5 rounded text-[11px] font-bold"
+                    <Tag
                       style={{
-                        backgroundColor: `${languageColors[repo.language] || "#85948d"}22`,
-                        color: languageColors[repo.language] || "#bacac2",
+                        margin: 0,
+                        fontSize: 11,
+                        fontWeight: 700,
+                        background: `${languageColors[repo.language] || "#64748B"}22`,
+                        color: languageColors[repo.language] || brand.textSecondary,
+                        border: "none",
                       }}
                     >
                       {repo.language.toUpperCase()}
-                    </span>
+                    </Tag>
                   )}
                 </div>
 
-                <p className="font-[family-name:var(--font-dm-sans)] text-[14px] text-[#bacac2] mb-6 h-10 overflow-hidden line-clamp-2">
+                <p style={{ fontSize: 14, color: brand.textSecondary, marginBottom: 24, height: 40, overflow: "hidden" }}>
                   {repo.description || "No description"}
                 </p>
 
-                <div className="flex gap-6">
-                  <div className="flex items-center gap-1 text-[#bacac2]">
-                    <span>⭐</span>
-                    <span className="font-[family-name:var(--font-mono)] text-[13px]">
-                      {repo.stars.toLocaleString()}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1 text-[#bacac2]">
-                    <span>⑂</span>
-                    <span className="font-[family-name:var(--font-mono)] text-[13px]">
-                      {repo.forks}
-                    </span>
-                  </div>
+                <div style={{ display: "flex", gap: 24 }}>
+                  <span style={{ display: "flex", alignItems: "center", gap: 6, color: brand.textSecondary, fontFamily: "var(--font-mono)", fontSize: 13 }}>
+                    <StarFilled style={{ color: "#F5A623" }} /> {repo.stars.toLocaleString()}
+                  </span>
+                  <span style={{ display: "flex", alignItems: "center", gap: 6, color: brand.textSecondary, fontFamily: "var(--font-mono)", fontSize: 13 }}>
+                    <ForkOutlined /> {repo.forks}
+                  </span>
                 </div>
 
-                {repo.topics && (
-                  <div className="flex flex-wrap gap-1 mt-4 pt-4 border-t border-[#1C2330]">
-                    {parseJsonArray(repo.topics)
-                      .slice(0, 3)
-                      .map((topic) => (
-                        <span
-                          key={topic}
-                          className="font-[family-name:var(--font-mono)] text-[11px] text-[#45f1c3]/60 border border-[#45f1c3]/20 px-1.5 py-0.5 rounded"
-                        >
-                          {topic}
-                        </span>
-                      ))}
+                {repo.topics && parseJsonArray(repo.topics).length > 0 && (
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 16, paddingTop: 16, borderTop: `1px solid ${brand.borderSubtle}` }}>
+                    {parseJsonArray(repo.topics).slice(0, 3).map((topic) => (
+                      <Tag key={topic} style={{ margin: 0, fontFamily: "var(--font-mono)", fontSize: 11, background: "rgba(79,70,229,0.1)", color: "#A5B4FC", border: "1px solid rgba(79,70,229,0.25)" }}>
+                        {topic}
+                      </Tag>
+                    ))}
                   </div>
                 )}
-              </a>
+              </Card>
             </AnimatedSection>
           ))}
         </div>

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="py-8">
+    <div style={{ paddingTop: 32, paddingBottom: 32 }}>
       <Contact />
     </div>
   )

@@ -1,8 +1,10 @@
 "use client"
 
 import { useState } from "react"
+import { Segmented, Empty, Row, Col } from "antd"
 import { AnimatedSection } from "@/components/shared/AnimatedSection"
 import { ProjectCard } from "@/components/projects/ProjectCard"
+import { brand } from "@/lib/theme"
 import type { Project } from "@prisma/client"
 
 const CATEGORIES = ["All", "SaaS", "EdTech", "AI", "Business", "Mobile"]
@@ -10,9 +12,7 @@ const CATEGORIES = ["All", "SaaS", "EdTech", "AI", "Business", "Mobile"]
 export function ProjectsClientPage({ projects }: { projects: Project[] }) {
   const [activeCategory, setActiveCategory] = useState("All")
 
-  const filtered =
-    activeCategory === "All" ? projects : projects.filter((p) => p.category === activeCategory)
-
+  const filtered = activeCategory === "All" ? projects : projects.filter((p) => p.category === activeCategory)
   const featured = filtered.filter((p) => p.featured)
   const regular = filtered.filter((p) => !p.featured)
 
@@ -21,61 +21,50 @@ export function ProjectsClientPage({ projects }: { projects: Project[] }) {
   )
 
   return (
-    <div className="max-w-[1200px] mx-auto px-6 md:px-8 lg:px-16 py-16">
-      {/* Header */}
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "64px 24px" }}>
       <AnimatedSection>
-        <div className="mb-16">
-          <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold text-[#45f1c3] uppercase tracking-[0.1em] mb-3">
+        <div style={{ marginBottom: 48 }}>
+          <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 600, color: brand.primary, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
             Portfolio
           </p>
-          <h1 className="font-[family-name:var(--font-syne)] text-[48px] font-bold text-[#d9e3f7] mb-4">
-            All Projects
+          <h1 style={{ fontFamily: "var(--font-display)", fontSize: 48, fontWeight: 700, color: brand.text, marginBottom: 16 }}>
+            Engineering Work
           </h1>
-          <p className="font-[family-name:var(--font-dm-sans)] text-[16px] text-[#bacac2] max-w-2xl">
+          <p style={{ fontSize: 16, color: brand.textSecondary, maxWidth: 640 }}>
             {projects.length} systems built across SaaS, EdTech, AI, and business verticals in Ghana and West Africa.
           </p>
         </div>
       </AnimatedSection>
 
-      {/* Category filter */}
       <AnimatedSection delay={0.1}>
-        <div className="flex flex-wrap gap-2 mb-12">
-          {availableCategories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-2 rounded-lg font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.1em] border transition-all duration-200 ${
-                activeCategory === cat
-                  ? "bg-[#45f1c3] text-[#00382a] border-[#45f1c3]"
-                  : "bg-transparent text-[#bacac2] border-[#1C2330] hover:border-[#45f1c3]/40 hover:text-[#45f1c3]"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+        <div style={{ marginBottom: 48 }}>
+          <Segmented options={availableCategories} value={activeCategory} onChange={(v) => setActiveCategory(v as string)} size="large" />
         </div>
       </AnimatedSection>
 
-      {/* Projects grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {featured.map((project, i) => (
-          <AnimatedSection key={project.id} delay={i * 0.05}>
-            <ProjectCard project={project} featured />
-          </AnimatedSection>
-        ))}
-        {regular.map((project, i) => (
-          <AnimatedSection key={project.id} delay={i * 0.05}>
-            <ProjectCard project={project} />
-          </AnimatedSection>
-        ))}
-      </div>
-
-      {filtered.length === 0 && (
-        <div className="text-center py-20">
-          <p className="font-[family-name:var(--font-dm-sans)] text-[16px] text-[#bacac2]">
-            No projects in this category yet.
-          </p>
-        </div>
+      {filtered.length === 0 ? (
+        <Empty description="No projects in this category yet." style={{ padding: "80px 0" }} />
+      ) : (
+        <>
+          {featured.length > 0 && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 24 }}>
+              {featured.map((project, i) => (
+                <AnimatedSection key={project.id} delay={i * 0.05}>
+                  <ProjectCard project={project} featured />
+                </AnimatedSection>
+              ))}
+            </div>
+          )}
+          <Row gutter={[24, 24]}>
+            {regular.map((project, i) => (
+              <Col key={project.id} xs={24} md={12} lg={8}>
+                <AnimatedSection delay={i * 0.05}>
+                  <ProjectCard project={project} />
+                </AnimatedSection>
+              </Col>
+            ))}
+          </Row>
+        </>
       )}
     </div>
   )

@@ -1,30 +1,28 @@
+"use client"
+
 import Link from "next/link"
+import { Button } from "antd"
+import { brand } from "@/lib/theme"
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-[#080B10] flex items-center justify-center px-6 dot-grid">
-      <div className="text-center max-w-lg">
-        <div className="font-[family-name:var(--font-syne)] text-[120px] font-bold text-[#45f1c3] leading-none mb-4 tracking-tighter">
+    <div className="grid-bg" style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+      <div style={{ textAlign: "center", maxWidth: 520 }}>
+        <div style={{ fontFamily: "var(--font-display)", fontSize: 120, fontWeight: 700, color: brand.primary, lineHeight: 1, marginBottom: 16, letterSpacing: "-0.04em" }}>
           404
         </div>
-        <h1 className="font-[family-name:var(--font-syne)] text-[28px] font-bold text-[#d9e3f7] mb-4">
+        <h1 style={{ fontFamily: "var(--font-display)", fontSize: 28, fontWeight: 700, color: brand.text, marginBottom: 16 }}>
           Page not found
         </h1>
-        <p className="font-[family-name:var(--font-dm-sans)] text-[16px] text-[#bacac2] mb-8 leading-relaxed">
+        <p style={{ fontSize: 16, color: brand.textSecondary, marginBottom: 32, lineHeight: 1.7 }}>
           This page doesn&apos;t exist or may have been moved. Let&apos;s get you back on track.
         </p>
-        <div className="flex items-center justify-center gap-4">
-          <Link
-            href="/"
-            className="bg-[#00d4a8] text-[#00382a] font-bold px-8 py-3 rounded-lg hover:shadow-[0_0_30px_rgba(0,212,168,0.3)] transition-all font-[family-name:var(--font-dm-sans)]"
-          >
-            Go Home
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16 }}>
+          <Link href="/">
+            <Button type="primary" size="large">Go Home</Button>
           </Link>
-          <Link
-            href="/projects"
-            className="border border-[#1C2330] text-[#d9e3f7] px-8 py-3 rounded-lg hover:bg-[#16202e] hover:border-[#45f1c3]/40 transition-all font-[family-name:var(--font-dm-sans)]"
-          >
-            View Projects
+          <Link href="/projects">
+            <Button size="large" style={{ borderColor: brand.border }}>View Projects</Button>
           </Link>
         </div>
       </div>

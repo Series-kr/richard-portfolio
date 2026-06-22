@@ -1,11 +1,13 @@
 "use client"
 
 import { useState } from "react"
+import { Row, Col, Card, Tag, Divider } from "antd"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCircleCheck, faLocationDot, faBriefcase } from "@fortawesome/free-solid-svg-icons"
+import { faCircleCheck, faLocationDot } from "@fortawesome/free-solid-svg-icons"
 import { AnimatedSection } from "@/components/shared/AnimatedSection"
 import { SectionHeader } from "@/components/shared/SectionHeader"
 import { formatDate, parseJsonArray } from "@/lib/utils"
+import { brand } from "@/lib/theme"
 import type { Experience } from "@prisma/client"
 
 interface Props {
@@ -20,101 +22,108 @@ export function ExperienceSection({ experiences }: Props) {
   if (!current) return null
 
   return (
-    <section className="py-16 max-w-[1200px] mx-auto px-6 md:px-8 lg:px-16" id="experience">
+    <section id="experience" style={{ padding: "64px 24px", maxWidth: 1200, margin: "0 auto" }}>
       <SectionHeader title="Experience" />
 
-      <div className="grid md:grid-cols-12 gap-16">
-        {/* Timeline */}
-        <div className="md:col-span-4">
-          <div className="space-y-8">
-            {sorted.map((exp, i) => (
-              <AnimatedSection key={exp.id} delay={i * 0.1}>
-                <button
-                  type="button"
-                  onClick={() => setActive(i)}
-                  className={`w-full text-left timeline-item relative pl-6 flex items-start transition-opacity duration-200 ${
-                    active === i ? "opacity-100" : "opacity-50 hover:opacity-75"
-                  }`}
-                >
-                  <div
-                    className={`timeline-dot absolute left-0 top-1.5 w-3 h-3 rounded-full ${
-                      active === i ? "bg-[#45f1c3] ring-4 ring-[#45f1c3]/20" : "bg-[#85948d]"
-                    }`}
-                  />
-                  <div>
+      <Row gutter={[64, 32]}>
+        <Col xs={24} md={9}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+            {sorted.map((exp, i) => {
+              const isActive = active === i
+              return (
+                <AnimatedSection key={exp.id} delay={i * 0.1}>
+                  <button
+                    type="button"
+                    onClick={() => setActive(i)}
+                    style={{
+                      width: "100%",
+                      textAlign: "left",
+                      background: "transparent",
+                      border: "none",
+                      cursor: "pointer",
+                      paddingLeft: 24,
+                      position: "relative",
+                      opacity: isActive ? 1 : 0.5,
+                      transition: "opacity 0.2s ease",
+                    }}
+                  >
                     <span
-                      className={`font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.1em] ${
-                        active === i ? "text-[#45f1c3]" : "text-[#bacac2]"
-                      }`}
+                      style={{
+                        position: "absolute",
+                        left: 0,
+                        top: 6,
+                        width: 12,
+                        height: 12,
+                        borderRadius: "50%",
+                        background: isActive ? brand.primary : brand.textMuted,
+                        boxShadow: isActive ? `0 0 0 4px rgba(79, 70, 229, 0.2)` : "none",
+                      }}
+                    />
+                    <span
+                      style={{
+                        fontFamily: "var(--font-mono)",
+                        fontSize: 11,
+                        fontWeight: 600,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.1em",
+                        color: isActive ? brand.primary : brand.textSecondary,
+                      }}
                     >
                       {formatDate(exp.startDate).split(" ").slice(-1)[0]} —{" "}
                       {exp.current ? "Present" : formatDate(exp.endDate!).split(" ").slice(-1)[0]}
                     </span>
-                    <h4 className="font-[family-name:var(--font-dm-sans)] text-[18px] font-semibold text-[#d9e3f7] mt-1 flex items-center gap-2">
+                    <h4 style={{ fontSize: 18, fontWeight: 600, color: brand.text, margin: "4px 0 0", display: "flex", alignItems: "center", gap: 8 }}>
                       {exp.role}
-                      {exp.current && (
-                        <span className="font-[family-name:var(--font-mono)] text-[9px] font-semibold uppercase tracking-widest bg-[#45f1c3]/15 text-[#45f1c3] border border-[#45f1c3]/30 px-2 py-0.5 rounded-full">
-                          Current
-                        </span>
-                      )}
+                      {exp.current && <Tag color="success" style={{ margin: 0 }}>Current</Tag>}
                     </h4>
-                    <p className="font-[family-name:var(--font-dm-sans)] text-[14px] text-[#bacac2]">
-                      {exp.company}
-                    </p>
-                  </div>
-                </button>
-              </AnimatedSection>
-            ))}
+                    <p style={{ fontSize: 14, color: brand.textSecondary, margin: 0 }}>{exp.company}</p>
+                  </button>
+                </AnimatedSection>
+              )
+            })}
           </div>
-        </div>
+        </Col>
 
-        {/* Detail panel */}
-        <div className="md:col-span-8">
+        <Col xs={24} md={15}>
           <AnimatedSection key={active} direction="none">
-            <div className="bg-[#16202e] border border-[#1C2330] p-8 rounded-xl h-full">
-              <div className="flex justify-between items-start mb-6">
+            <Card variant="outlined" style={{ height: "100%", borderColor: brand.border }} styles={{ body: { padding: 32 } }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24, gap: 16 }}>
                 <div>
-                  <h3 className="font-[family-name:var(--font-syne)] text-[32px] font-bold text-[#d9e3f7]">
+                  <h3 style={{ fontFamily: "var(--font-display)", fontSize: 28, fontWeight: 700, color: brand.text, margin: 0 }}>
                     {current.role}
                   </h3>
-                  <p className="font-[family-name:var(--font-dm-sans)] text-[18px] font-semibold text-[#45f1c3]">
-                    {current.company}
-                  </p>
-                  <p className="font-[family-name:var(--font-dm-sans)] text-[14px] text-[#bacac2] mt-1 flex items-center gap-1.5">
-                    <FontAwesomeIcon icon={faLocationDot} className="w-3 h-3 text-[#45f1c3]" />
+                  <p style={{ fontSize: 18, fontWeight: 600, color: brand.primary, margin: "4px 0 0" }}>{current.company}</p>
+                  <p style={{ fontSize: 14, color: brand.textSecondary, margin: "4px 0 0", display: "flex", alignItems: "center", gap: 6 }}>
+                    <FontAwesomeIcon icon={faLocationDot} style={{ color: brand.primary }} />
                     {current.location}
                   </p>
                 </div>
-                <span className="px-4 py-1 bg-[#45f1c3]/10 text-[#45f1c3] border border-[#45f1c3]/20 rounded-full font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase whitespace-nowrap">
+                <Tag color="processing" style={{ textTransform: "uppercase", fontFamily: "var(--font-mono)", fontSize: 11 }}>
                   {current.roleType}
-                </span>
+                </Tag>
               </div>
 
-              <ul className="space-y-4 mb-6">
+              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 16 }}>
                 {parseJsonArray(current.bullets).map((bullet, i) => (
-                  <li key={i} className="flex items-start gap-3 text-[#bacac2]">
-                    <FontAwesomeIcon icon={faCircleCheck} className="w-4 h-4 text-[#45f1c3] mt-0.5 flex-shrink-0" />
-                    <span className="font-[family-name:var(--font-dm-sans)] text-[15px] leading-relaxed">
-                      {bullet}
-                    </span>
+                  <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: 12, color: brand.textSecondary }}>
+                    <FontAwesomeIcon icon={faCircleCheck} style={{ color: brand.primary, marginTop: 4, flexShrink: 0 }} />
+                    <span style={{ fontSize: 15, lineHeight: 1.7 }}>{bullet}</span>
                   </li>
                 ))}
               </ul>
 
-              <div className="flex flex-wrap gap-2 pt-6 border-t border-[#1C2330]">
+              <Divider style={{ borderColor: brand.borderSubtle, margin: "24px 0 16px" }} />
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
                 {parseJsonArray(current.techStack).map((tech) => (
-                  <span
-                    key={tech}
-                    className="font-[family-name:var(--font-mono)] text-[13px] text-[#bacac2]"
-                  >
+                  <span key={tech} style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: brand.textSecondary }}>
                     #{tech.toLowerCase().replace(/[\s.]/g, "")}
                   </span>
                 ))}
               </div>
-            </div>
+            </Card>
           </AnimatedSection>
-        </div>
-      </div>
+        </Col>
+      </Row>
     </section>
   )
 }

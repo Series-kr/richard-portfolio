@@ -5,7 +5,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
   return (
     <>
       <Navbar />
-      <main className="pt-20">{children}</main>
+      <main style={{ paddingTop: 80 }}>{children}</main>
       <Footer />
     </>
   )

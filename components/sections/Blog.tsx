@@ -1,7 +1,12 @@
+"use client"
+
 import Link from "next/link"
+import { Button, Empty } from "antd"
+import { ArrowRightOutlined } from "@ant-design/icons"
 import { AnimatedSection } from "@/components/shared/AnimatedSection"
 import { SectionHeader } from "@/components/shared/SectionHeader"
 import { BlogCard } from "@/components/blog/BlogCard"
+import { brand } from "@/lib/theme"
 import type { BlogPost } from "@prisma/client"
 
 interface Props {
@@ -10,7 +15,7 @@ interface Props {
 
 export function BlogSection({ posts }: Props) {
   return (
-    <section className="py-16 max-w-[1200px] mx-auto px-6 md:px-8 lg:px-16" id="blog">
+    <section id="blog" style={{ padding: "64px 24px", maxWidth: 1200, margin: "0 auto" }}>
       <SectionHeader
         title="Insights & Engineering"
         subtitle="Deep dives into architecture, performance, and the future of web."
@@ -18,14 +23,10 @@ export function BlogSection({ posts }: Props) {
       />
 
       {posts.length === 0 ? (
-        <div className="text-center py-16">
-          <p className="font-[family-name:var(--font-dm-sans)] text-[16px] text-[#bacac2]">
-            Blog posts coming soon.
-          </p>
-        </div>
+        <Empty description="Blog posts coming soon." style={{ padding: "48px 0" }} />
       ) : (
         <>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 24 }}>
             {posts.map((post, i) => (
               <AnimatedSection key={post.id} delay={i * 0.1}>
                 <BlogCard post={post} />
@@ -33,13 +34,11 @@ export function BlogSection({ posts }: Props) {
             ))}
           </div>
 
-          <div className="text-center mt-12">
-            <Link
-              href="/blog"
-              className="inline-flex items-center gap-2 border border-[#1C2330] text-[#d9e3f7] px-8 py-3 rounded-lg hover:bg-[#16202e] hover:border-[#45f1c3]/40 transition-all font-[family-name:var(--font-dm-sans)] font-medium"
-            >
-              Read All Posts
-              <span>→</span>
+          <div style={{ textAlign: "center", marginTop: 48 }}>
+            <Link href="/blog">
+              <Button size="large" icon={<ArrowRightOutlined />} iconPosition="end" style={{ borderColor: brand.border }}>
+                Read All Posts
+              </Button>
             </Link>
           </div>
         </>

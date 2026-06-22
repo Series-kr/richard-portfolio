@@ -1,5 +1,9 @@
+"use client"
+
 import Link from "next/link"
+import { Card, Tag } from "antd"
 import { formatDate, parseJsonArray } from "@/lib/utils"
+import { brand } from "@/lib/theme"
 import type { BlogPost } from "@prisma/client"
 
 interface Props {
@@ -7,82 +11,57 @@ interface Props {
   variant?: "default" | "featured"
 }
 
-const categoryConfig: Record<string, { text: string; border: string; hover: string }> = {
-  Architecture: {
-    text: "text-[#45f1c3]",
-    border: "border-t-[#45f1c3]",
-    hover: "group-hover:text-[#45f1c3]",
-  },
-  AI: {
-    text: "text-[#ffcea6]",
-    border: "border-t-[#ffcea6]",
-    hover: "group-hover:text-[#ffcea6]",
-  },
-  DevOps: {
-    text: "text-[#28dfb3]",
-    border: "border-t-[#28dfb3]",
-    hover: "group-hover:text-[#28dfb3]",
-  },
-  Engineering: {
-    text: "text-[#45f1c3]",
-    border: "border-t-[#45f1c3]",
-    hover: "group-hover:text-[#45f1c3]",
-  },
-  Career: {
-    text: "text-[#ffcea6]",
-    border: "border-t-[#ffcea6]",
-    hover: "group-hover:text-[#ffcea6]",
-  },
+const categoryAccent: Record<string, string> = {
+  Architecture: brand.primary,
+  AI: "#F5A623",
+  DevOps: "#10B981",
+  Engineering: brand.primary,
+  Career: "#F5A623",
 }
 
-const defaultConfig = categoryConfig.Engineering
-
 export function BlogCard({ post }: Props) {
-  const config = categoryConfig[post.category] ?? defaultConfig
+  const accent = categoryAccent[post.category] ?? brand.primary
   const tags = parseJsonArray(post.tags)
 
   return (
-    <Link
-      href={`/blog/${post.slug}`}
-      className={`group block bg-[#091421] border border-[#1C2330] p-8 rounded-xl border-t-4 ${config.border} transition-transform hover:-translate-y-2 duration-300`}
-    >
-      <span className={`font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.1em] ${config.text}`}>
-        {post.category}
-      </span>
+    <Link href={`/blog/${post.slug}`} style={{ display: "block", height: "100%" }}>
+      <Card
+        variant="outlined"
+        hoverable
+        style={{ height: "100%", borderTop: `3px solid ${accent}`, borderColor: brand.border }}
+        styles={{ body: { padding: 28 } }}
+      >
+        <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em", color: accent }}>
+          {post.category}
+        </span>
 
-      <h3 className={`font-[family-name:var(--font-dm-sans)] text-[18px] font-semibold text-[#d9e3f7] mt-4 mb-6 ${config.hover} transition-colors leading-snug`}>
-        {post.title}
-      </h3>
+        <h3 style={{ fontSize: 18, fontWeight: 600, color: brand.text, margin: "16px 0 20px", lineHeight: 1.4 }}>{post.title}</h3>
 
-      <p className="font-[family-name:var(--font-dm-sans)] text-[14px] text-[#bacac2] mb-8 line-clamp-2 leading-relaxed">
-        {post.excerpt}
-      </p>
+        <p style={{ fontSize: 14, color: brand.textSecondary, marginBottom: 28, lineHeight: 1.6 }}>{post.excerpt}</p>
 
-      <div className="flex items-center justify-between">
-        <div className="flex items-center text-[#bacac2] font-[family-name:var(--font-mono)] text-[13px]">
-          <span>{post.publishedAt ? formatDate(post.publishedAt) : "Draft"}</span>
-          <span className="mx-4">•</span>
-          <span>{post.readTimeMinutes} min read</span>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, color: brand.textMuted, fontFamily: "var(--font-mono)", fontSize: 13 }}>
+            <span>{post.publishedAt ? formatDate(post.publishedAt) : "Draft"}</span>
+            <span>•</span>
+            <span>{post.readTimeMinutes} min read</span>
+          </div>
+          {post.generatedByAI && (
+            <Tag style={{ margin: 0, fontFamily: "var(--font-mono)", fontSize: 11, background: "rgba(79,70,229,0.1)", color: "#A5B4FC", border: "1px solid rgba(79,70,229,0.25)" }}>
+              AI
+            </Tag>
+          )}
         </div>
-        {post.generatedByAI && (
-          <span className="font-[family-name:var(--font-mono)] text-[11px] text-[#45f1c3]/60 border border-[#45f1c3]/20 px-2 py-0.5 rounded">
-            AI
-          </span>
+
+        {tags.length > 0 && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16, paddingTop: 16, borderTop: `1px solid ${brand.borderSubtle}` }}>
+            {tags.slice(0, 3).map((tag) => (
+              <span key={tag} style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: brand.textMuted }}>
+                #{tag}
+              </span>
+            ))}
+          </div>
         )}
-      </div>
-
-      {tags.length > 0 && (
-        <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-[#1C2330]">
-          {tags.slice(0, 3).map((tag) => (
-            <span
-              key={tag}
-              className="font-[family-name:var(--font-mono)] text-[11px] text-[#85948d]"
-            >
-              #{tag}
-            </span>
-          ))}
-        </div>
-      )}
+      </Card>
     </Link>
   )
 }

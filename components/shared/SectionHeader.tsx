@@ -1,3 +1,5 @@
+import { brand } from "@/lib/theme"
+
 interface Props {
   label?: string
   title: string
@@ -7,19 +9,36 @@ interface Props {
 
 export function SectionHeader({ label, title, subtitle, center = false }: Props) {
   return (
-    <div className={center ? "text-center mb-16" : "mb-12"}>
+    <div style={{ textAlign: center ? "center" : "left", marginBottom: center ? 64 : 48 }}>
       {label && (
-        <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold text-[#45f1c3] uppercase tracking-[0.1em] mb-3">
+        <p
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 11,
+            fontWeight: 600,
+            color: brand.primary,
+            textTransform: "uppercase",
+            letterSpacing: "0.12em",
+            margin: "0 0 12px",
+          }}
+        >
           {label}
         </p>
       )}
-      <h2 className="font-[family-name:var(--font-syne)] text-[32px] font-bold text-[#d9e3f7] leading-[1.3]">
+      <h2
+        style={{
+          fontFamily: "var(--font-display)",
+          fontSize: 32,
+          fontWeight: 700,
+          color: brand.text,
+          lineHeight: 1.25,
+          margin: 0,
+        }}
+      >
         {title}
       </h2>
       {subtitle && (
-        <p className="font-[family-name:var(--font-dm-sans)] text-[16px] text-[#bacac2] mt-2 leading-relaxed">
-          {subtitle}
-        </p>
+        <p style={{ fontSize: 16, color: brand.textSecondary, marginTop: 8, lineHeight: 1.7 }}>{subtitle}</p>
       )}
     </div>
   )

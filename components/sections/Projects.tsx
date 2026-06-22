@@ -2,9 +2,12 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { Segmented, Button } from "antd"
+import { ArrowRightOutlined } from "@ant-design/icons"
 import { AnimatedSection } from "@/components/shared/AnimatedSection"
 import { SectionHeader } from "@/components/shared/SectionHeader"
 import { ProjectCard } from "@/components/projects/ProjectCard"
+import { brand } from "@/lib/theme"
 import type { Project } from "@prisma/client"
 
 interface Props {
@@ -19,53 +22,33 @@ export function ProjectsSection({ projects }: Props) {
   const featured = projects.filter((p) => p.featured)
   const regular = projects.filter((p) => !p.featured)
 
-  const filteredRegular =
-    activeCategory === "All"
-      ? regular
-      : regular.filter((p) => p.category === activeCategory)
+  const matches = (p: Project) => activeCategory === "All" || p.category === activeCategory
+  const filteredRegular = regular.filter(matches)
+  const filteredFeatured = featured.filter(matches)
 
   return (
-    <section className="py-16 bg-[#050f1c]" id="projects">
-      <div className="max-w-[1200px] mx-auto px-6 md:px-8 lg:px-16">
-        <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-16">
-          <SectionHeader
-            title="Featured Projects"
-            subtitle="A selection of my best work across SaaS, EdTech, and AI."
+    <section id="projects" style={{ padding: "64px 24px", background: "#0B1120" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-end", gap: 24, marginBottom: 48 }}>
+          <SectionHeader title="Featured Projects" subtitle="A selection of my best work across SaaS, EdTech, and AI." />
+          <Segmented
+            options={CATEGORIES}
+            value={activeCategory}
+            onChange={(val) => setActiveCategory(val as string)}
           />
-
-          {/* Category filter */}
-          <div className="flex bg-[#16202e] p-1 rounded-lg border border-[#1C2330]/60 flex-shrink-0">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-1.5 rounded font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.1em] transition-all duration-200 ${
-                  activeCategory === cat
-                    ? "bg-[#45f1c3] text-[#00382a]"
-                    : "text-[#bacac2] hover:text-[#45f1c3]"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
         </div>
 
-        {/* Featured projects — full width, stacked */}
-        {featured.filter((p) => activeCategory === "All" || p.category === activeCategory).length > 0 && (
-          <div className="space-y-6 mb-6">
-            {featured
-              .filter((p) => activeCategory === "All" || p.category === activeCategory)
-              .map((project, i) => (
-                <AnimatedSection key={project.id} delay={i * 0.1}>
-                  <ProjectCard project={project} featured />
-                </AnimatedSection>
-              ))}
+        {filteredFeatured.length > 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 24 }}>
+            {filteredFeatured.map((project, i) => (
+              <AnimatedSection key={project.id} delay={i * 0.1}>
+                <ProjectCard project={project} featured />
+              </AnimatedSection>
+            ))}
           </div>
         )}
 
-        {/* Regular projects grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 24 }}>
           {filteredRegular.slice(0, 6).map((project, i) => (
             <AnimatedSection key={project.id} delay={i * 0.08}>
               <ProjectCard project={project} />
@@ -73,13 +56,11 @@ export function ProjectsSection({ projects }: Props) {
           ))}
         </div>
 
-        <div className="text-center mt-12">
-          <Link
-            href="/projects"
-            className="inline-flex items-center gap-2 border border-[#1C2330] text-[#d9e3f7] px-8 py-3 rounded-lg hover:bg-[#16202e] hover:border-[#45f1c3]/40 transition-all font-[family-name:var(--font-dm-sans)] font-medium"
-          >
-            View All Projects
-            <span>→</span>
+        <div style={{ textAlign: "center", marginTop: 48 }}>
+          <Link href="/projects">
+            <Button size="large" icon={<ArrowRightOutlined />} iconPosition="end" style={{ borderColor: brand.border }}>
+              View All Projects
+            </Button>
           </Link>
         </div>
       </div>
