@@ -1,14 +1,15 @@
 :root {
-  --bg-base: #0A0A0A;
-  --bg-container: #141414;
-  --bg-elevated: #1C1C1C;
-  --border: #262626;
-  --border-subtle: #1A1A1A;
-  --primary: #4F46E5;
-  --success: #10B981;
-  --text: #FFFFFF;
-  --text-secondary: #A1A1AA;
-  --text-muted: #71717A;
+  --bg-base: #08090A;
+  --bg-container: #0F1011;
+  --bg-elevated: #16181B;
+  --border: #23252A;
+  --border-subtle: #18191C;
+  --primary: #E6B450;
+  --primary-soft: #F2D08A;
+  --success: #4CC38A;
+  --text: #F7F8F8;
+  --text-secondary: #8A8F98;
+  --text-muted: #62666D;
 
   --font-body: var(--font-inter), Inter, system-ui, -apple-system, sans-serif;
   --font-display: var(--font-display), "Space Grotesk", system-ui, sans-serif;
@@ -28,6 +29,7 @@ body {
   background-color: var(--bg-base);
   color: var(--text);
   font-family: var(--font-body);
+  letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -36,25 +38,27 @@ body {
 h1, h2, h3, h4, h5 {
   font-family: var(--font-display);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
 
 code, pre, kbd {
   font-family: var(--font-mono);
 }
 
+/* No underlines anywhere by default (menus, cards, links) */
 a {
   color: inherit;
+  text-decoration: none;
 }
 
-/* Signature: subtle engineering grid background for the hero */
+/* Signature: Linear-style faint engineering grid for the hero */
 .grid-bg {
   background-image:
-    linear-gradient(to right, rgba(63, 63, 70, 0.25) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(63, 63, 70, 0.25) 1px, transparent 1px);
-  background-size: 48px 48px;
-  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+    linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 35%, transparent 100%);
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 35%, transparent 100%);
 }
 
 /* Reading progress bar (blog article) */
@@ -62,7 +66,7 @@ a {
   position: fixed;
   top: 0;
   left: 0;
-  height: 3px;
+  height: 2px;
   background: var(--primary);
   z-index: 1000;
   transition: width 0.1s ease-out;
@@ -91,15 +95,15 @@ a {
 .prose li { margin: 0.4em 0; }
 .prose img { max-width: 100%; border-radius: 8px; }
 .prose code {
-  color: #A5B4FC;
-  background: #0B1120;
+  color: var(--primary-soft);
+  background: #121214;
   padding: 2px 6px;
   border-radius: 4px;
   font-family: var(--font-mono);
   font-size: 0.88em;
 }
 .prose pre {
-  background: #0B1120;
+  background: #0B0C0E;
   border: 1px solid var(--border);
   border-left: 3px solid var(--primary);
   border-radius: 8px;
@@ -110,7 +114,7 @@ a {
 .prose pre code {
   background: transparent;
   padding: 0;
-  color: #E2E8F0;
+  color: #E8E9EA;
 }
 .prose blockquote {
   border-left: 3px solid var(--primary);
@@ -125,12 +129,16 @@ a {
 
 /* Pulsing "available" indicator */
 @keyframes pulse-ring {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45); }
-  50% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(76, 195, 138, 0.45); }
+  50% { box-shadow: 0 0 0 6px rgba(76, 195, 138, 0); }
 }
 .pulse-dot {
   animation: pulse-ring 2s ease-in-out infinite;
 }
+
+/* Spin (GitHub sync icon) */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 1s linear infinite; }
 
 /* Hide scrollbar where needed */
 .no-scrollbar::-webkit-scrollbar { display: none; }

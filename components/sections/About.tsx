@@ -63,7 +63,7 @@ export function About() {
                 width: 72,
                 height: 72,
                 borderRadius: "50%",
-                border: "2px solid rgba(79, 70, 229, 0.3)",
+                border: "2px solid rgba(230, 180, 80, 0.3)",
                 bgcolor: brand.bgElevated,
                 display: "flex",
                 alignItems: "center",

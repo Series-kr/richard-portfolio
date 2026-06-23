@@ -1,23 +1,24 @@
 import { createTheme } from "@mui/material/styles"
 
 /**
- * "Precision Engineering" — OLED edition. Single source of truth for the
- * portfolio's colour language. `brand` is consumed by inline `sx`/style values;
- * `theme` drives Material UI globally via ThemeProvider.
+ * "Aurum" — a Linear.app-inspired dark surface with a single gold accent.
+ * Near-black layered backgrounds, hairline borders, restrained typography.
+ * `brand` feeds inline `sx`/style values; `theme` drives Material UI globally.
  */
 export const brand = {
-  bgBase: "#0A0A0A",
-  bgContainer: "#141414",
-  bgElevated: "#1C1C1C",
-  border: "#262626",
-  borderSubtle: "#1A1A1A",
-  primary: "#4F46E5",
-  primarySoft: "#A5B4FC",
-  success: "#10B981",
-  text: "#FFFFFF",
-  textSecondary: "#A1A1AA",
-  textMuted: "#71717A",
-  siderBg: "#0A0A0A",
+  bgBase: "#08090A",
+  bgContainer: "#0F1011",
+  bgElevated: "#16181B",
+  border: "#23252A",
+  borderSubtle: "#18191C",
+  primary: "#E6B450",
+  primaryHover: "#F0C66B",
+  primarySoft: "#F2D08A",
+  success: "#4CC38A",
+  text: "#F7F8F8",
+  textSecondary: "#8A8F98",
+  textMuted: "#62666D",
+  siderBg: "#0B0C0E",
 } as const
 
 const fontBody = "var(--font-inter), Inter, system-ui, -apple-system, sans-serif"
@@ -27,7 +28,7 @@ export const theme = createTheme({
   cssVariables: true,
   palette: {
     mode: "dark",
-    primary: { main: brand.primary, contrastText: "#FFFFFF" },
+    primary: { main: brand.primary, dark: "#C99A35", light: brand.primaryHover, contrastText: "#0A0A0A" },
     success: { main: brand.success },
     background: { default: brand.bgBase, paper: brand.bgContainer },
     text: { primary: brand.text, secondary: brand.textSecondary },
@@ -36,20 +37,18 @@ export const theme = createTheme({
   shape: { borderRadius: 8 },
   typography: {
     fontFamily: fontBody,
-    h1: { fontFamily: fontDisplay, fontWeight: 700, letterSpacing: "-0.03em" },
-    h2: { fontFamily: fontDisplay, fontWeight: 700, letterSpacing: "-0.02em" },
-    h3: { fontFamily: fontDisplay, fontWeight: 700, letterSpacing: "-0.02em" },
-    h4: { fontFamily: fontDisplay, fontWeight: 700 },
+    h1: { fontFamily: fontDisplay, fontWeight: 700, letterSpacing: "-0.035em" },
+    h2: { fontFamily: fontDisplay, fontWeight: 700, letterSpacing: "-0.03em" },
+    h3: { fontFamily: fontDisplay, fontWeight: 700, letterSpacing: "-0.025em" },
+    h4: { fontFamily: fontDisplay, fontWeight: 700, letterSpacing: "-0.02em" },
     h5: { fontFamily: fontDisplay, fontWeight: 700 },
     h6: { fontFamily: fontDisplay, fontWeight: 600 },
-    button: { textTransform: "none", fontWeight: 600 },
+    button: { textTransform: "none", fontWeight: 600, letterSpacing: 0 },
+    body1: { letterSpacing: "-0.01em" },
+    body2: { letterSpacing: "-0.01em" },
   },
   components: {
-    MuiPaper: {
-      styleOverrides: {
-        root: { backgroundImage: "none" },
-      },
-    },
+    MuiPaper: { styleOverrides: { root: { backgroundImage: "none" } } },
     MuiCard: {
       defaultProps: { elevation: 0 },
       styleOverrides: {
@@ -57,29 +56,37 @@ export const theme = createTheme({
           backgroundColor: brand.bgContainer,
           backgroundImage: "none",
           border: `1px solid ${brand.border}`,
+          transition: "border-color 0.2s ease, background-color 0.2s ease",
         },
       },
     },
     MuiButton: {
       defaultProps: { disableElevation: true },
       styleOverrides: {
-        root: { borderRadius: 8 },
+        root: { borderRadius: 8, paddingInline: 16 },
+        contained: {
+          "&.MuiButton-colorPrimary": {
+            color: "#0A0A0A",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.18)",
+            "&:hover": { backgroundColor: brand.primaryHover },
+          },
+        },
+        outlined: { borderColor: brand.border, "&:hover": { borderColor: brand.textSecondary, backgroundColor: brand.bgElevated } },
+        text: { "&:hover": { backgroundColor: brand.bgElevated } },
       },
     },
-    MuiAppBar: {
+    MuiToggleButton: {
       styleOverrides: {
-        root: { backgroundImage: "none" },
+        root: {
+          color: brand.textSecondary,
+          borderColor: brand.border,
+          "&.Mui-selected": { color: "#0A0A0A", backgroundColor: brand.primary, "&:hover": { backgroundColor: brand.primaryHover } },
+        },
       },
     },
-    MuiOutlinedInput: {
-      styleOverrides: {
-        root: { backgroundColor: brand.bgBase },
-      },
-    },
-    MuiChip: {
-      styleOverrides: {
-        root: { fontWeight: 500 },
-      },
-    },
+    MuiAppBar: { styleOverrides: { root: { backgroundImage: "none" } } },
+    MuiOutlinedInput: { styleOverrides: { root: { backgroundColor: brand.bgBase } } },
+    MuiChip: { styleOverrides: { root: { fontWeight: 500 } } },
+    MuiLink: { defaultProps: { underline: "none" } },
   },
 })

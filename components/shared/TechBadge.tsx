@@ -24,8 +24,8 @@ export function TechBadge({ name, variant = "default", small = false }: Props) {
         fontSize: small ? 11 : 12.5,
         height: small ? 22 : 26,
         borderRadius: "4px",
-        bgcolor: isPrimary ? "rgba(79, 70, 229, 0.14)" : "rgba(63, 63, 70, 0.4)",
-        border: `1px solid ${isPrimary ? "rgba(79, 70, 229, 0.4)" : brand.border}`,
+        bgcolor: isPrimary ? "rgba(230, 180, 80, 0.14)" : "rgba(63, 63, 70, 0.4)",
+        border: `1px solid ${isPrimary ? "rgba(230, 180, 80, 0.4)" : brand.border}`,
         color: isPrimary ? brand.primarySoft : brand.text,
       }}
     />

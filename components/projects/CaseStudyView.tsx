@@ -122,7 +122,7 @@ export function CaseStudyView({ project, related }: Props) {
       )}
 
       <AnimatedSection delay={0.3}>
-        <Box sx={{ background: "linear-gradient(90deg, rgba(79,70,229,0.14), transparent)", border: "1px solid rgba(79,70,229,0.3)", p: 5, borderRadius: 2, textAlign: "center" }}>
+        <Box sx={{ background: "linear-gradient(90deg, rgba(230,180,80,0.14), transparent)", border: "1px solid rgba(230,180,80,0.3)", p: 5, borderRadius: 2, textAlign: "center" }}>
           <h3 style={{ fontFamily: "var(--font-display)", fontSize: 28, fontWeight: 700, color: brand.text, marginBottom: 12 }}>
             Want to build something like this?
           </h3>

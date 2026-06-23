@@ -37,7 +37,7 @@ export function Hero() {
           transform: "translate(-50%, -50%)",
           width: 620,
           height: 620,
-          background: "rgba(79, 70, 229, 0.10)",
+          background: "rgba(230, 180, 80, 0.10)",
           borderRadius: "50%",
           filter: "blur(130px)",
           pointerEvents: "none",

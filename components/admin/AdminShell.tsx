@@ -65,7 +65,7 @@ export function AdminShell({ children, unreadCount }: Props) {
             sx={{
               mx: 1,
               borderRadius: 1,
-              "&.Mui-selected": { bgcolor: "rgba(79,70,229,0.18)", color: brand.primary },
+              "&.Mui-selected": { bgcolor: "rgba(230,180,80,0.18)", color: brand.primary },
               "&.Mui-selected .MuiListItemIcon-root": { color: brand.primary },
             }}
           >

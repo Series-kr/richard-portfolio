@@ -55,7 +55,7 @@ export function ProjectCard({ project, featured = false }: Props) {
               <Image src={project.imageUrl} alt={project.title} fill style={{ objectFit: "cover" }} sizes="(max-width: 768px) 100vw, 50vw" />
             ) : (
               <Box sx={{ textAlign: "center", p: 4 }}>
-                <Box sx={{ width: 80, height: 80, borderRadius: 2, background: "rgba(79,70,229,0.14)", border: "1px solid rgba(79,70,229,0.3)", display: "flex", alignItems: "center", justifyContent: "center", mx: "auto", mb: 2, fontSize: 30 }}>
+                <Box sx={{ width: 80, height: 80, borderRadius: 2, background: "rgba(230,180,80,0.14)", border: "1px solid rgba(230,180,80,0.3)", display: "flex", alignItems: "center", justifyContent: "center", mx: "auto", mb: 2, fontSize: 30 }}>
                   {categoryEmoji(project.category)}
                 </Box>
                 <p style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: brand.primary, textTransform: "uppercase", letterSpacing: "0.15em" }}>{project.category}</p>
@@ -74,7 +74,7 @@ export function ProjectCard({ project, featured = false }: Props) {
           <Image src={project.imageUrl} alt={project.title} fill style={{ objectFit: "cover" }} sizes="(max-width: 768px) 100vw, 33vw" />
         ) : (
           <Box sx={{ textAlign: "center" }}>
-            <Box sx={{ width: 56, height: 56, borderRadius: 1.5, background: "rgba(79,70,229,0.14)", border: "1px solid rgba(79,70,229,0.3)", display: "flex", alignItems: "center", justifyContent: "center", mx: "auto", mb: 1, fontSize: 24 }}>
+            <Box sx={{ width: 56, height: 56, borderRadius: 1.5, background: "rgba(230,180,80,0.14)", border: "1px solid rgba(230,180,80,0.3)", display: "flex", alignItems: "center", justifyContent: "center", mx: "auto", mb: 1, fontSize: 24 }}>
               {categoryEmoji(project.category)}
             </Box>
             <p style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: brand.textMuted, textTransform: "uppercase", letterSpacing: "0.15em" }}>{project.category}</p>

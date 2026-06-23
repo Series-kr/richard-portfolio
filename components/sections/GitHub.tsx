@@ -86,7 +86,7 @@ export function GitHubSection({ repos }: Props) {
                   {repo.topics && parseJsonArray(repo.topics).length > 0 && (
                     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75, mt: 2, pt: 2, borderTop: `1px solid ${brand.borderSubtle}` }}>
                       {parseJsonArray(repo.topics).slice(0, 3).map((topic) => (
-                        <Chip key={topic} label={topic} size="small" sx={{ fontFamily: "var(--font-mono)", fontSize: 11, bgcolor: "rgba(79,70,229,0.12)", color: brand.primarySoft, border: "1px solid rgba(79,70,229,0.3)" }} />
+                        <Chip key={topic} label={topic} size="small" sx={{ fontFamily: "var(--font-mono)", fontSize: 11, bgcolor: "rgba(230,180,80,0.12)", color: brand.primarySoft, border: "1px solid rgba(230,180,80,0.3)" }} />
                       ))}
                     </Box>
                   )}

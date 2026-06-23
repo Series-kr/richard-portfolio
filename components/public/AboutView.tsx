@@ -53,7 +53,7 @@ export function AboutView({ experiences, skills }: Props) {
 
           <Card sx={{ p: 4 }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3.5 }}>
-              <Box sx={{ width: 80, height: 80, borderRadius: "50%", background: "rgba(79,70,229,0.14)", border: "2px solid rgba(79,70,229,0.3)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <Box sx={{ width: 80, height: 80, borderRadius: "50%", background: "rgba(230,180,80,0.14)", border: "2px solid rgba(230,180,80,0.3)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                 <span style={{ fontFamily: "var(--font-display)", fontSize: 30, fontWeight: 700, color: brand.primary }}>RK</span>
               </Box>
               <Box>

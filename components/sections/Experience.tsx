@@ -55,7 +55,7 @@ export function ExperienceSection({ experiences }: Props) {
                       height: 12,
                       borderRadius: "50%",
                       background: isActive ? brand.primary : brand.textMuted,
-                      boxShadow: isActive ? "0 0 0 4px rgba(79, 70, 229, 0.2)" : "none",
+                      boxShadow: isActive ? "0 0 0 4px rgba(230, 180, 80, 0.2)" : "none",
                     }}
                   />
                   <span

@@ -45,7 +45,7 @@ export function Skills({ skills }: Props) {
                     width: 48,
                     height: 48,
                     borderRadius: 2,
-                    background: "rgba(79, 70, 229, 0.14)",
+                    background: "rgba(230, 180, 80, 0.14)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",

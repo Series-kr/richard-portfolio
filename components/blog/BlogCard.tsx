@@ -41,7 +41,7 @@ export function BlogCard({ post }: Props) {
             <span>{post.readTimeMinutes} min read</span>
           </Box>
           {post.generatedByAI && (
-            <Chip label="AI" size="small" sx={{ fontFamily: "var(--font-mono)", fontSize: 11, bgcolor: "rgba(79,70,229,0.12)", color: brand.primarySoft, border: "1px solid rgba(79,70,229,0.3)" }} />
+            <Chip label="AI" size="small" sx={{ fontFamily: "var(--font-mono)", fontSize: 11, bgcolor: "rgba(230,180,80,0.12)", color: brand.primarySoft, border: "1px solid rgba(230,180,80,0.3)" }} />
           )}
         </Box>
 

@@ -30,7 +30,7 @@ export function ArticleView({ post }: { post: BlogPost }) {
               {post.category}
             </span>
             {post.generatedByAI && (
-              <Chip label="AI-assisted" size="small" sx={{ fontFamily: "var(--font-mono)", fontSize: 11, bgcolor: "rgba(79,70,229,0.12)", color: brand.primarySoft, border: "1px solid rgba(79,70,229,0.3)" }} />
+              <Chip label="AI-assisted" size="small" sx={{ fontFamily: "var(--font-mono)", fontSize: 11, bgcolor: "rgba(230,180,80,0.12)", color: brand.primarySoft, border: "1px solid rgba(230,180,80,0.3)" }} />
             )}
           </Box>
 
@@ -42,7 +42,7 @@ export function ArticleView({ post }: { post: BlogPost }) {
 
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: `1px solid ${brand.border}`, borderBottom: `1px solid ${brand.border}`, py: 2 }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <Box sx={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(79,70,229,0.14)", border: "1px solid rgba(79,70,229,0.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Box sx={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(230,180,80,0.14)", border: "1px solid rgba(230,180,80,0.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <span style={{ fontFamily: "var(--font-display)", fontSize: 14, fontWeight: 700, color: brand.primary }}>RK</span>
               </Box>
               <Box>
@@ -80,7 +80,7 @@ export function ArticleView({ post }: { post: BlogPost }) {
           </>
         )}
 
-        <Box sx={{ background: "linear-gradient(90deg, rgba(79,70,229,0.14), transparent)", border: "1px solid rgba(79,70,229,0.3)", p: 4, borderRadius: 2 }}>
+        <Box sx={{ background: "linear-gradient(90deg, rgba(230,180,80,0.14), transparent)", border: "1px solid rgba(230,180,80,0.3)", p: 4, borderRadius: 2 }}>
           <h3 style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 700, color: brand.text, marginBottom: 8 }}>Want to work together?</h3>
           <p style={{ fontSize: 16, color: brand.textSecondary, marginBottom: 16 }}>I&apos;m available for freelance projects and consulting.</p>
           <Link href="/#contact">
