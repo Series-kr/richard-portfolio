@@ -1,6 +1,6 @@
 "use client"
 
-import { Tag } from "antd"
+import { Chip } from "@mui/material"
 import { brand } from "@/lib/theme"
 
 interface Props {
@@ -11,26 +11,23 @@ interface Props {
 
 export function TechBadge({ name, variant = "default", small = false }: Props) {
   if (variant === "mono") {
-    return (
-      <span style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: brand.textSecondary }}>{name}</span>
-    )
+    return <span style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: brand.textSecondary }}>{name}</span>
   }
 
   const isPrimary = variant === "primary"
   return (
-    <Tag
-      style={{
+    <Chip
+      label={name}
+      size="small"
+      sx={{
         fontFamily: "var(--font-mono)",
         fontSize: small ? 11 : 12.5,
-        padding: small ? "0 6px" : "1px 8px",
-        margin: 0,
-        borderRadius: 4,
-        background: isPrimary ? "rgba(79, 70, 229, 0.12)" : "rgba(45, 55, 72, 0.45)",
-        border: `1px solid ${isPrimary ? "rgba(79, 70, 229, 0.35)" : brand.border}`,
-        color: isPrimary ? "#A5B4FC" : brand.text,
+        height: small ? 22 : 26,
+        borderRadius: "4px",
+        bgcolor: isPrimary ? "rgba(79, 70, 229, 0.14)" : "rgba(63, 63, 70, 0.4)",
+        border: `1px solid ${isPrimary ? "rgba(79, 70, 229, 0.4)" : brand.border}`,
+        color: isPrimary ? brand.primarySoft : brand.text,
       }}
-    >
-      {name}
-    </Tag>
+    />
   )
 }

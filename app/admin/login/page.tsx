@@ -3,23 +3,21 @@
 import { useState } from "react"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { Card, Form, Input, Button, Alert } from "antd"
+import { Box, Card, TextField, Button, Alert } from "@mui/material"
 import { brand } from "@/lib/theme"
-
-interface LoginValues {
-  email: string
-  password: string
-}
 
 export default function AdminLoginPage() {
   const router = useRouter()
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
-  const onFinish = async (values: LoginValues) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
     setLoading(true)
     setError("")
-    const result = await signIn("credentials", { ...values, redirect: false })
+    const result = await signIn("credentials", { email, password, redirect: false })
     setLoading(false)
     if (result?.error) {
       setError("Invalid credentials. Please try again.")
@@ -30,32 +28,28 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="grid-bg" style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-      <div style={{ width: "100%", maxWidth: 400 }}>
-        <div style={{ textAlign: "center", marginBottom: 32 }}>
+    <Box className="grid-bg" sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", p: 2 }}>
+      <Box sx={{ width: "100%", maxWidth: 400 }}>
+        <Box sx={{ textAlign: "center", mb: 4 }}>
           <div style={{ fontFamily: "var(--font-display)", fontSize: 48, fontWeight: 700, color: brand.primary, letterSpacing: "-0.05em", marginBottom: 8 }}>
             RK
           </div>
           <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: brand.textSecondary, textTransform: "uppercase", letterSpacing: "0.15em" }}>
             Operations Console
           </p>
-        </div>
+        </Box>
 
-        <Card variant="outlined" style={{ borderColor: brand.border }} styles={{ body: { padding: 32 } }}>
-          {error && <Alert type="error" message={error} showIcon style={{ marginBottom: 16 }} />}
-          <Form layout="vertical" requiredMark={false} onFinish={onFinish}>
-            <Form.Item name="email" label="Email" rules={[{ required: true, type: "email", message: "Enter a valid email" }]}>
-              <Input size="large" placeholder="admin@example.com" autoComplete="username" />
-            </Form.Item>
-            <Form.Item name="password" label="Password" rules={[{ required: true, message: "Password is required" }]}>
-              <Input.Password size="large" placeholder="••••••••" autoComplete="current-password" />
-            </Form.Item>
-            <Button type="primary" size="large" htmlType="submit" loading={loading} block>
-              Sign In
+        <Card sx={{ p: 4 }}>
+          {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+          <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
+            <TextField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" fullWidth required />
+            <TextField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" fullWidth required />
+            <Button type="submit" variant="contained" size="large" disabled={loading}>
+              {loading ? "Signing in…" : "Sign In"}
             </Button>
-          </Form>
+          </Box>
         </Card>
-      </div>
-    </div>
+      </Box>
+    </Box>
   )
 }

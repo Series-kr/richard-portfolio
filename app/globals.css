@@ -1,14 +1,14 @@
 :root {
-  --bg-base: #0F1629;
-  --bg-container: #1A2235;
-  --bg-elevated: #1E2740;
-  --border: #2D3748;
-  --border-subtle: #222C40;
+  --bg-base: #0A0A0A;
+  --bg-container: #141414;
+  --bg-elevated: #1C1C1C;
+  --border: #262626;
+  --border-subtle: #1A1A1A;
   --primary: #4F46E5;
   --success: #10B981;
   --text: #FFFFFF;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
+  --text-secondary: #A1A1AA;
+  --text-muted: #71717A;
 
   --font-body: var(--font-inter), Inter, system-ui, -apple-system, sans-serif;
   --font-display: var(--font-display), "Space Grotesk", system-ui, sans-serif;
@@ -50,8 +50,8 @@ a {
 /* Signature: subtle engineering grid background for the hero */
 .grid-bg {
   background-image:
-    linear-gradient(to right, rgba(45, 55, 72, 0.35) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(45, 55, 72, 0.35) 1px, transparent 1px);
+    linear-gradient(to right, rgba(63, 63, 70, 0.25) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(63, 63, 70, 0.25) 1px, transparent 1px);
   background-size: 48px 48px;
   -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
   mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Segmented, Empty, Row, Col } from "antd"
+import { Box, Typography, ToggleButton, ToggleButtonGroup } from "@mui/material"
 import { AnimatedSection } from "@/components/shared/AnimatedSection"
 import { ProjectCard } from "@/components/projects/ProjectCard"
 import { brand } from "@/lib/theme"
@@ -16,14 +16,12 @@ export function ProjectsClientPage({ projects }: { projects: Project[] }) {
   const featured = filtered.filter((p) => p.featured)
   const regular = filtered.filter((p) => !p.featured)
 
-  const availableCategories = CATEGORIES.filter(
-    (cat) => cat === "All" || projects.some((p) => p.category === cat)
-  )
+  const availableCategories = CATEGORIES.filter((cat) => cat === "All" || projects.some((p) => p.category === cat))
 
   return (
-    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "64px 24px" }}>
+    <Box sx={{ maxWidth: 1200, mx: "auto", py: 8, px: 3 }}>
       <AnimatedSection>
-        <div style={{ marginBottom: 48 }}>
+        <Box sx={{ mb: 6 }}>
           <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 600, color: brand.primary, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
             Portfolio
           </p>
@@ -33,39 +31,43 @@ export function ProjectsClientPage({ projects }: { projects: Project[] }) {
           <p style={{ fontSize: 16, color: brand.textSecondary, maxWidth: 640 }}>
             {projects.length} systems built across SaaS, EdTech, AI, and business verticals in Ghana and West Africa.
           </p>
-        </div>
+        </Box>
       </AnimatedSection>
 
       <AnimatedSection delay={0.1}>
-        <div style={{ marginBottom: 48 }}>
-          <Segmented options={availableCategories} value={activeCategory} onChange={(v) => setActiveCategory(v as string)} size="large" />
-        </div>
+        <Box sx={{ mb: 6 }}>
+          <ToggleButtonGroup exclusive value={activeCategory} onChange={(_, v) => v && setActiveCategory(v)} sx={{ flexWrap: "wrap" }}>
+            {availableCategories.map((cat) => (
+              <ToggleButton key={cat} value={cat} sx={{ textTransform: "none", px: 2.5 }}>
+                {cat}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+        </Box>
       </AnimatedSection>
 
       {filtered.length === 0 ? (
-        <Empty description="No projects in this category yet." style={{ padding: "80px 0" }} />
+        <Typography sx={{ textAlign: "center", color: brand.textSecondary, py: 10 }}>No projects in this category yet.</Typography>
       ) : (
         <>
           {featured.length > 0 && (
-            <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 24 }}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 3, mb: 3 }}>
               {featured.map((project, i) => (
                 <AnimatedSection key={project.id} delay={i * 0.05}>
                   <ProjectCard project={project} featured />
                 </AnimatedSection>
               ))}
-            </div>
+            </Box>
           )}
-          <Row gutter={[24, 24]}>
+          <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr", lg: "repeat(3, 1fr)" }, gap: 3 }}>
             {regular.map((project, i) => (
-              <Col key={project.id} xs={24} md={12} lg={8}>
-                <AnimatedSection delay={i * 0.05}>
-                  <ProjectCard project={project} />
-                </AnimatedSection>
-              </Col>
+              <AnimatedSection key={project.id} delay={i * 0.05}>
+                <ProjectCard project={project} />
+              </AnimatedSection>
             ))}
-          </Row>
+          </Box>
         </>
       )}
-    </div>
+    </Box>
   )
 }

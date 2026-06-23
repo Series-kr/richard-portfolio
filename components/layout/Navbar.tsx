@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Button, Drawer } from "antd"
-import { MenuOutlined } from "@ant-design/icons"
+import { Button, Drawer, IconButton, Box } from "@mui/material"
+import MenuIcon from "@mui/icons-material/Menu"
 import { brand } from "@/lib/theme"
 
 const navLinks = [
@@ -40,7 +40,7 @@ export function Navbar() {
         width: "100%",
         zIndex: 50,
         transition: "all 0.3s ease",
-        background: scrolled ? "rgba(15, 22, 41, 0.85)" : "transparent",
+        background: scrolled ? "rgba(10, 10, 10, 0.8)" : "transparent",
         backdropFilter: scrolled ? "blur(12px)" : "none",
         borderBottom: `1px solid ${scrolled ? brand.borderSubtle : "transparent"}`,
       }}
@@ -70,8 +70,7 @@ export function Navbar() {
           RK
         </Link>
 
-        {/* Desktop nav */}
-        <div className="nav-desktop" style={{ alignItems: "center", gap: 32 }}>
+        <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center", gap: 4 }}>
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -87,30 +86,19 @@ export function Navbar() {
             </Link>
           ))}
           <Link href="/#contact">
-            <Button type="primary">Hire Me</Button>
+            <Button variant="contained">Hire Me</Button>
           </Link>
-        </div>
+        </Box>
 
-        {/* Mobile trigger */}
-        <span className="nav-mobile">
-          <Button
-            type="text"
-            aria-label="Open menu"
-            icon={<MenuOutlined style={{ color: brand.text }} />}
-            onClick={() => setMenuOpen(true)}
-          />
-        </span>
+        <Box sx={{ display: { xs: "inline-flex", md: "none" } }}>
+          <IconButton aria-label="Open menu" onClick={() => setMenuOpen(true)} sx={{ color: brand.text }}>
+            <MenuIcon />
+          </IconButton>
+        </Box>
       </nav>
 
-      <Drawer
-        title="Menu"
-        placement="right"
-        open={menuOpen}
-        onClose={() => setMenuOpen(false)}
-        width={260}
-        styles={{ body: { padding: 24 } }}
-      >
-        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+      <Drawer anchor="right" open={menuOpen} onClose={() => setMenuOpen(false)}>
+        <Box sx={{ width: 260, p: 3, display: "flex", flexDirection: "column", gap: 2.5, height: "100%" }}>
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -122,21 +110,12 @@ export function Navbar() {
             </Link>
           ))}
           <Link href="/#contact" onClick={() => setMenuOpen(false)}>
-            <Button type="primary" block>
+            <Button variant="contained" fullWidth>
               Hire Me
             </Button>
           </Link>
-        </div>
+        </Box>
       </Drawer>
-
-      <style>{`
-        .nav-desktop { display: none; }
-        .nav-mobile { display: inline-flex; }
-        @media (min-width: 768px) {
-          .nav-desktop { display: flex; }
-          .nav-mobile { display: none; }
-        }
-      `}</style>
     </header>
   )
 }

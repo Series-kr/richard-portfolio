@@ -3,91 +3,105 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Table, Tag, Button, Space, Popconfirm, App } from "antd"
-import { EditOutlined, ExportOutlined, DeleteOutlined, StarFilled, PlusOutlined } from "@ant-design/icons"
-import type { ColumnsType } from "antd/es/table"
+import { Box, Button, Chip, IconButton, Typography, Dialog, DialogTitle, DialogActions } from "@mui/material"
+import { DataGrid, type GridColDef } from "@mui/x-data-grid"
+import EditIcon from "@mui/icons-material/Edit"
+import OpenInNewIcon from "@mui/icons-material/OpenInNew"
+import DeleteIcon from "@mui/icons-material/Delete"
+import StarIcon from "@mui/icons-material/Star"
+import AddIcon from "@mui/icons-material/Add"
+import { useSnackbar } from "notistack"
 import type { Project } from "@prisma/client"
 import { brand } from "@/lib/theme"
 
 export function ProjectsTable({ projects }: { projects: Project[] }) {
   const router = useRouter()
-  const { message } = App.useApp()
-  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const { enqueueSnackbar } = useSnackbar()
+  const [pendingDelete, setPendingDelete] = useState<Project | null>(null)
+  const [deleting, setDeleting] = useState(false)
 
-  const handleDelete = async (id: string) => {
-    setDeletingId(id)
+  const handleDelete = async () => {
+    if (!pendingDelete) return
+    setDeleting(true)
     try {
-      const res = await fetch(`/api/projects/${id}`, { method: "DELETE" })
+      const res = await fetch(`/api/projects/${pendingDelete.id}`, { method: "DELETE" })
       if (!res.ok) throw new Error()
-      message.success("Project deleted")
+      enqueueSnackbar("Project deleted", { variant: "success" })
       router.refresh()
     } catch {
-      message.error("Failed to delete project")
+      enqueueSnackbar("Failed to delete project", { variant: "error" })
     } finally {
-      setDeletingId(null)
+      setDeleting(false)
+      setPendingDelete(null)
     }
   }
 
-  const columns: ColumnsType<Project> = [
+  const columns: GridColDef<Project>[] = [
     {
-      title: "Title",
-      dataIndex: "title",
-      render: (_, p) => (
-        <div>
-          <div style={{ fontWeight: 600, color: brand.text }}>{p.title}</div>
-          <div style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: brand.textMuted }}>/{p.slug}</div>
-        </div>
+      field: "title",
+      headerName: "Title",
+      flex: 1.6,
+      minWidth: 200,
+      renderCell: (p) => (
+        <Box sx={{ lineHeight: 1.3, py: 1 }}>
+          <Typography sx={{ fontWeight: 600, color: brand.text, fontSize: 14 }}>{p.row.title}</Typography>
+          <Typography sx={{ fontFamily: "var(--font-mono)", fontSize: 12, color: brand.textMuted }}>/{p.row.slug}</Typography>
+        </Box>
       ),
     },
+    { field: "category", headerName: "Category", flex: 0.8, minWidth: 120, renderCell: (p) => <Chip label={p.row.category} size="small" color="primary" variant="outlined" /> },
     {
-      title: "Category",
-      dataIndex: "category",
-      render: (cat: string) => <Tag color="processing">{cat}</Tag>,
-      filters: Array.from(new Set(projects.map((p) => p.category))).map((c) => ({ text: c, value: c })),
-      onFilter: (value, p) => p.category === value,
+      field: "featured",
+      headerName: "Featured",
+      flex: 0.6,
+      minWidth: 90,
+      renderCell: (p) => (p.row.featured ? <StarIcon sx={{ color: "#F5A623", fontSize: 18 }} /> : <span style={{ color: brand.textMuted }}>—</span>),
     },
+    { field: "status", headerName: "Status", flex: 0.7, minWidth: 110, renderCell: (p) => <Chip label={p.row.status} size="small" color={p.row.status === "published" ? "success" : "default"} variant="outlined" /> },
     {
-      title: "Featured",
-      dataIndex: "featured",
-      render: (featured: boolean) =>
-        featured ? <StarFilled style={{ color: "#F5A623" }} /> : <span style={{ color: brand.textMuted }}>—</span>,
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      render: (status: string) => <Tag color={status === "published" ? "success" : "default"}>{status}</Tag>,
-    },
-    {
-      title: "Actions",
-      key: "actions",
-      render: (_, p) => (
-        <Space>
-          <Link href={`/admin/projects/${p.id}`}>
-            <Button size="small" icon={<EditOutlined />}>Edit</Button>
-          </Link>
-          <Link href={`/projects/${p.slug}`} target="_blank">
-            <Button size="small" type="text" icon={<ExportOutlined />} />
-          </Link>
-          <Popconfirm title="Delete this project?" onConfirm={() => handleDelete(p.id)} okText="Delete" okButtonProps={{ danger: true }}>
-            <Button size="small" danger type="text" icon={<DeleteOutlined />} loading={deletingId === p.id} />
-          </Popconfirm>
-        </Space>
+      field: "actions",
+      headerName: "Actions",
+      flex: 1,
+      minWidth: 150,
+      sortable: false,
+      filterable: false,
+      renderCell: (p) => (
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+          <Button size="small" startIcon={<EditIcon />} component={Link} href={`/admin/projects/${p.row.id}`}>Edit</Button>
+          <IconButton size="small" component={Link} href={`/projects/${p.row.slug}`} target="_blank"><OpenInNewIcon fontSize="small" /></IconButton>
+          <IconButton size="small" color="error" onClick={() => setPendingDelete(p.row)}><DeleteIcon fontSize="small" /></IconButton>
+        </Box>
       ),
     },
   ]
 
   return (
-    <div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center", justifyContent: "space-between", marginBottom: 32 }}>
-        <div>
-          <h1 style={{ fontFamily: "var(--font-display)", fontSize: 32, fontWeight: 700, color: brand.text, margin: 0 }}>Projects</h1>
-          <p style={{ fontSize: 14, color: brand.textSecondary, marginTop: 4 }}>{projects.length} projects in database</p>
-        </div>
-        <Link href="/admin/projects/new">
-          <Button type="primary" icon={<PlusOutlined />}>New Project</Button>
-        </Link>
-      </div>
-      <Table rowKey="id" columns={columns} dataSource={projects} pagination={{ pageSize: 10, hideOnSinglePage: true }} scroll={{ x: "max-content" }} />
-    </div>
+    <Box>
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, alignItems: "center", justifyContent: "space-between", mb: 4 }}>
+        <Box>
+          <Typography variant="h4">Projects</Typography>
+          <Typography sx={{ fontSize: 14, color: brand.textSecondary, mt: 0.5 }}>{projects.length} projects in database</Typography>
+        </Box>
+        <Button variant="contained" startIcon={<AddIcon />} component={Link} href="/admin/projects/new">New Project</Button>
+      </Box>
+
+      <DataGrid
+        rows={projects}
+        columns={columns}
+        getRowHeight={() => "auto"}
+        initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
+        pageSizeOptions={[10, 25, 50]}
+        disableRowSelectionOnClick
+        sx={{ border: `1px solid ${brand.border}`, "& .MuiDataGrid-cell": { display: "flex", alignItems: "center" } }}
+      />
+
+      <Dialog open={!!pendingDelete} onClose={() => setPendingDelete(null)}>
+        <DialogTitle>Delete &ldquo;{pendingDelete?.title}&rdquo;?</DialogTitle>
+        <DialogActions>
+          <Button onClick={() => setPendingDelete(null)}>Cancel</Button>
+          <Button color="error" variant="contained" onClick={handleDelete} disabled={deleting}>Delete</Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   )
 }

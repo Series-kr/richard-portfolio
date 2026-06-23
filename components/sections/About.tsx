@@ -1,6 +1,6 @@
 "use client"
 
-import { Card, Button, Divider } from "antd"
+import { Card, Button, Divider, Box } from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faMapPin, faWifi, faLaptopCode, faGraduationCap, faLanguage, faDownload } from "@fortawesome/free-solid-svg-icons"
 import { AnimatedSection } from "@/components/shared/AnimatedSection"
@@ -18,15 +18,17 @@ const para: React.CSSProperties = { fontSize: 16, color: brand.textSecondary, li
 
 export function About() {
   return (
-    <section
+    <Box
+      component="section"
       id="about"
-      style={{
-        padding: "64px 24px",
+      sx={{
+        py: 8,
+        px: 3,
         maxWidth: 1200,
-        margin: "0 auto",
+        mx: "auto",
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-        gap: 64,
+        gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+        gap: 8,
         alignItems: "center",
       }}
     >
@@ -54,15 +56,15 @@ export function About() {
       </AnimatedSection>
 
       <AnimatedSection direction="right">
-        <Card variant="outlined" style={{ borderColor: brand.border }} styles={{ body: { padding: 32 } }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 28 }}>
-            <div
-              style={{
+        <Card sx={{ p: 4 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2.5, mb: 3.5 }}>
+            <Box
+              sx={{
                 width: 72,
                 height: 72,
                 borderRadius: "50%",
-                border: `2px solid rgba(79, 70, 229, 0.3)`,
-                background: brand.bgElevated,
+                border: "2px solid rgba(79, 70, 229, 0.3)",
+                bgcolor: brand.bgElevated,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -70,40 +72,40 @@ export function About() {
               }}
             >
               <span style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 700, color: brand.primary }}>RK</span>
-            </div>
-            <div>
+            </Box>
+            <Box>
               <h3 style={{ fontSize: 18, fontWeight: 600, color: brand.text, margin: 0 }}>Richard Korankye</h3>
               <p style={{ fontSize: 14, color: brand.primary, margin: "2px 0 0" }}>Senior Full-Stack Engineer</p>
               <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: brand.textMuted, margin: "2px 0 0" }}>
                 richardkorankye07@gmail.com
               </p>
-            </div>
-          </div>
+            </Box>
+          </Box>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1.75 }}>
             {quickFacts.map((fact) => (
-              <div key={fact.label} style={{ display: "flex", alignItems: "center", gap: 12, color: brand.textSecondary }}>
+              <Box key={fact.label} sx={{ display: "flex", alignItems: "center", gap: 1.5, color: brand.textSecondary }}>
                 <FontAwesomeIcon icon={fact.icon} style={{ color: brand.primary, width: 14 }} />
                 <span style={{ fontSize: 14 }}>{fact.label}</span>
-              </div>
+              </Box>
             ))}
-          </div>
+          </Box>
 
-          <Divider style={{ borderColor: brand.borderSubtle, margin: "24px 0" }} />
+          <Divider sx={{ borderColor: brand.borderSubtle, my: 3 }} />
 
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <span className="pulse-dot" style={{ width: 8, height: 8, borderRadius: "50%", background: brand.success }} />
               <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: brand.success, textTransform: "uppercase", letterSpacing: "0.12em" }}>
                 Open to opportunities
               </span>
-            </div>
-            <Button type="link" href="#contact" icon={<FontAwesomeIcon icon={faDownload} />} style={{ padding: 0 }}>
+            </Box>
+            <Button href="#contact" variant="text" startIcon={<FontAwesomeIcon icon={faDownload} />} sx={{ minWidth: 0 }}>
               Download CV
             </Button>
-          </div>
+          </Box>
         </Card>
       </AnimatedSection>
-    </section>
+    </Box>
   )
 }

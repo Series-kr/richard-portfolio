@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Button } from "antd"
+import { Button } from "@mui/material"
 import { brand } from "@/lib/theme"
 
 export default function NotFound() {
@@ -19,10 +19,10 @@ export default function NotFound() {
         </p>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16 }}>
           <Link href="/">
-            <Button type="primary" size="large">Go Home</Button>
+            <Button variant="contained" size="large">Go Home</Button>
           </Link>
           <Link href="/projects">
-            <Button size="large" style={{ borderColor: brand.border }}>View Projects</Button>
+            <Button variant="outlined" size="large" sx={{ borderColor: brand.border, color: brand.text }}>View Projects</Button>
           </Link>
         </div>
       </div>

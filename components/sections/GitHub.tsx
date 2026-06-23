@@ -1,7 +1,9 @@
 "use client"
 
-import { Card, Tag } from "antd"
-import { StarFilled, ForkOutlined, GithubOutlined } from "@ant-design/icons"
+import { Card, CardActionArea, Chip, Box } from "@mui/material"
+import StarIcon from "@mui/icons-material/Star"
+import CallSplitIcon from "@mui/icons-material/CallSplit"
+import GitHubIcon from "@mui/icons-material/GitHub"
 import { AnimatedSection } from "@/components/shared/AnimatedSection"
 import { parseJsonArray } from "@/lib/utils"
 import { brand } from "@/lib/theme"
@@ -25,13 +27,16 @@ export function GitHubSection({ repos }: Props) {
   if (repos.length === 0) return null
 
   return (
-    <section style={{ padding: "64px 24px", background: "#0B1120", borderTop: `1px solid ${brand.borderSubtle}`, borderBottom: `1px solid ${brand.borderSubtle}`, overflow: "hidden" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <GithubOutlined style={{ fontSize: 24, color: brand.primary }} />
+    <Box
+      component="section"
+      sx={{ py: 8, px: 3, background: brand.bgBase, borderTop: `1px solid ${brand.borderSubtle}`, borderBottom: `1px solid ${brand.borderSubtle}`, overflow: "hidden" }}
+    >
+      <Box sx={{ maxWidth: 1200, mx: "auto" }}>
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+            <GitHubIcon sx={{ fontSize: 24, color: brand.primary }} />
             <h2 style={{ fontSize: 18, fontWeight: 600, color: brand.text, margin: 0 }}>Recent Open Source</h2>
-          </div>
+          </Box>
           <a
             href={`https://github.com/${process.env.NEXT_PUBLIC_GITHUB_USERNAME || "Series-kr"}`}
             target="_blank"
@@ -40,65 +45,57 @@ export function GitHubSection({ repos }: Props) {
           >
             View All Repos
           </a>
-        </div>
+        </Box>
 
-        <div className="no-scrollbar" style={{ display: "flex", gap: 24, overflowX: "auto", paddingBottom: 16 }}>
+        <Box className="no-scrollbar" sx={{ display: "flex", gap: 3, overflowX: "auto", pb: 2 }}>
           {repos.map((repo, i) => (
             <AnimatedSection key={repo.id} delay={i * 0.08}>
-              <Card
-                variant="outlined"
-                hoverable
-                style={{ minWidth: 320, borderColor: brand.border }}
-                styles={{ body: { padding: 24 } }}
-                onClick={() => window.open(repo.url, "_blank", "noopener,noreferrer")}
-              >
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, gap: 8 }}>
-                  <span style={{ fontSize: 16, fontWeight: 700, color: brand.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {repo.name}
-                  </span>
-                  {repo.language && (
-                    <Tag
-                      style={{
-                        margin: 0,
-                        fontSize: 11,
-                        fontWeight: 700,
-                        background: `${languageColors[repo.language] || "#64748B"}22`,
-                        color: languageColors[repo.language] || brand.textSecondary,
-                        border: "none",
-                      }}
-                    >
-                      {repo.language.toUpperCase()}
-                    </Tag>
+              <Card sx={{ minWidth: 320 }}>
+                <CardActionArea
+                  href={repo.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{ p: 3, height: "100%", alignItems: "flex-start", display: "block" }}
+                >
+                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2, gap: 1 }}>
+                    <span style={{ fontSize: 16, fontWeight: 700, color: brand.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {repo.name}
+                    </span>
+                    {repo.language && (
+                      <Chip
+                        label={repo.language.toUpperCase()}
+                        size="small"
+                        sx={{ fontSize: 11, fontWeight: 700, bgcolor: `${languageColors[repo.language] || "#71717A"}22`, color: languageColors[repo.language] || brand.textSecondary, border: "none" }}
+                      />
+                    )}
+                  </Box>
+
+                  <p style={{ fontSize: 14, color: brand.textSecondary, marginBottom: 24, height: 40, overflow: "hidden" }}>
+                    {repo.description || "No description"}
+                  </p>
+
+                  <Box sx={{ display: "flex", gap: 3 }}>
+                    <span style={{ display: "flex", alignItems: "center", gap: 6, color: brand.textSecondary, fontFamily: "var(--font-mono)", fontSize: 13 }}>
+                      <StarIcon sx={{ fontSize: 16, color: "#F5A623" }} /> {repo.stars.toLocaleString()}
+                    </span>
+                    <span style={{ display: "flex", alignItems: "center", gap: 6, color: brand.textSecondary, fontFamily: "var(--font-mono)", fontSize: 13 }}>
+                      <CallSplitIcon sx={{ fontSize: 16 }} /> {repo.forks}
+                    </span>
+                  </Box>
+
+                  {repo.topics && parseJsonArray(repo.topics).length > 0 && (
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75, mt: 2, pt: 2, borderTop: `1px solid ${brand.borderSubtle}` }}>
+                      {parseJsonArray(repo.topics).slice(0, 3).map((topic) => (
+                        <Chip key={topic} label={topic} size="small" sx={{ fontFamily: "var(--font-mono)", fontSize: 11, bgcolor: "rgba(79,70,229,0.12)", color: brand.primarySoft, border: "1px solid rgba(79,70,229,0.3)" }} />
+                      ))}
+                    </Box>
                   )}
-                </div>
-
-                <p style={{ fontSize: 14, color: brand.textSecondary, marginBottom: 24, height: 40, overflow: "hidden" }}>
-                  {repo.description || "No description"}
-                </p>
-
-                <div style={{ display: "flex", gap: 24 }}>
-                  <span style={{ display: "flex", alignItems: "center", gap: 6, color: brand.textSecondary, fontFamily: "var(--font-mono)", fontSize: 13 }}>
-                    <StarFilled style={{ color: "#F5A623" }} /> {repo.stars.toLocaleString()}
-                  </span>
-                  <span style={{ display: "flex", alignItems: "center", gap: 6, color: brand.textSecondary, fontFamily: "var(--font-mono)", fontSize: 13 }}>
-                    <ForkOutlined /> {repo.forks}
-                  </span>
-                </div>
-
-                {repo.topics && parseJsonArray(repo.topics).length > 0 && (
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 16, paddingTop: 16, borderTop: `1px solid ${brand.borderSubtle}` }}>
-                    {parseJsonArray(repo.topics).slice(0, 3).map((topic) => (
-                      <Tag key={topic} style={{ margin: 0, fontFamily: "var(--font-mono)", fontSize: 11, background: "rgba(79,70,229,0.1)", color: "#A5B4FC", border: "1px solid rgba(79,70,229,0.25)" }}>
-                        {topic}
-                      </Tag>
-                    ))}
-                  </div>
-                )}
+                </CardActionArea>
               </Card>
             </AnimatedSection>
           ))}
-        </div>
-      </div>
-    </section>
+        </Box>
+      </Box>
+    </Box>
   )
 }

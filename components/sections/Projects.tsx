@@ -2,21 +2,17 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Segmented, Button } from "antd"
-import { ArrowRightOutlined } from "@ant-design/icons"
+import { Box, Button, ToggleButton, ToggleButtonGroup } from "@mui/material"
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
 import { AnimatedSection } from "@/components/shared/AnimatedSection"
 import { SectionHeader } from "@/components/shared/SectionHeader"
 import { ProjectCard } from "@/components/projects/ProjectCard"
 import { brand } from "@/lib/theme"
 import type { Project } from "@prisma/client"
 
-interface Props {
-  projects: Project[]
-}
-
 const CATEGORIES = ["All", "SaaS", "EdTech", "AI", "Business"]
 
-export function ProjectsSection({ projects }: Props) {
+export function ProjectsSection({ projects }: { projects: Project[] }) {
   const [activeCategory, setActiveCategory] = useState("All")
 
   const featured = projects.filter((p) => p.featured)
@@ -27,43 +23,51 @@ export function ProjectsSection({ projects }: Props) {
   const filteredFeatured = featured.filter(matches)
 
   return (
-    <section id="projects" style={{ padding: "64px 24px", background: "#0B1120" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-end", gap: 24, marginBottom: 48 }}>
+    <Box component="section" id="projects" sx={{ py: 8, px: 3, background: brand.bgBase }}>
+      <Box sx={{ maxWidth: 1200, mx: "auto" }}>
+        <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-end", gap: 3, mb: 6 }}>
           <SectionHeader title="Featured Projects" subtitle="A selection of my best work across SaaS, EdTech, and AI." />
-          <Segmented
-            options={CATEGORIES}
+          <ToggleButtonGroup
+            exclusive
+            size="small"
             value={activeCategory}
-            onChange={(val) => setActiveCategory(val as string)}
-          />
-        </div>
+            onChange={(_, val) => val && setActiveCategory(val)}
+            sx={{ flexWrap: "wrap" }}
+          >
+            {CATEGORIES.map((cat) => (
+              <ToggleButton key={cat} value={cat} sx={{ textTransform: "none", px: 2 }}>
+                {cat}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+        </Box>
 
         {filteredFeatured.length > 0 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 24 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 3, mb: 3 }}>
             {filteredFeatured.map((project, i) => (
               <AnimatedSection key={project.id} delay={i * 0.1}>
                 <ProjectCard project={project} featured />
               </AnimatedSection>
             ))}
-          </div>
+          </Box>
         )}
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 24 }}>
+        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "repeat(3, 1fr)" }, gap: 3 }}>
           {filteredRegular.slice(0, 6).map((project, i) => (
             <AnimatedSection key={project.id} delay={i * 0.08}>
               <ProjectCard project={project} />
             </AnimatedSection>
           ))}
-        </div>
+        </Box>
 
-        <div style={{ textAlign: "center", marginTop: 48 }}>
+        <Box sx={{ textAlign: "center", mt: 6 }}>
           <Link href="/projects">
-            <Button size="large" icon={<ArrowRightOutlined />} iconPosition="end" style={{ borderColor: brand.border }}>
+            <Button variant="outlined" size="large" endIcon={<ArrowForwardIcon />} sx={{ borderColor: brand.border, color: brand.text }}>
               View All Projects
             </Button>
           </Link>
-        </div>
-      </div>
-    </section>
+        </Box>
+      </Box>
+    </Box>
   )
 }

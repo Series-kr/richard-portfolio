@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { Form, Input, Select, Switch, Button, Row, Col, Card, Space, Popconfirm, App, Skeleton } from "antd"
+import {
+  Box, Card, TextField, MenuItem, Button, Switch, FormControlLabel, Autocomplete,
+  Typography, Skeleton, Dialog, DialogTitle, DialogActions,
+} from "@mui/material"
+import { useSnackbar } from "notistack"
 import { parseJsonArray } from "@/lib/utils"
 import { brand } from "@/lib/theme"
 
@@ -24,68 +28,57 @@ interface ProjectValues {
 }
 
 const initialValues: ProjectValues = {
-  title: "",
-  shortDesc: "",
-  problem: "",
-  solution: "",
-  impact: "",
-  techStack: [],
-  category: "SaaS",
-  featured: false,
-  order: 0,
-  githubUrl: "",
-  liveUrl: "",
-  status: "published",
+  title: "", shortDesc: "", problem: "", solution: "", impact: "", techStack: [],
+  category: "SaaS", featured: false, order: 0, githubUrl: "", liveUrl: "", status: "published",
 }
 
 export function ProjectForm({ id }: { id?: string }) {
   const router = useRouter()
-  const { message } = App.useApp()
-  const [form] = Form.useForm<ProjectValues>()
-  const [saving, setSaving] = useState(false)
+  const { enqueueSnackbar } = useSnackbar()
+  const [form, setForm] = useState<ProjectValues>(initialValues)
   const [loading, setLoading] = useState(Boolean(id))
+  const [saving, setSaving] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [titleError, setTitleError] = useState(false)
+
+  const set = <K extends keyof ProjectValues>(key: K, value: ProjectValues[K]) => setForm((p) => ({ ...p, [key]: value }))
 
   useEffect(() => {
     if (!id) return
     fetch(`/api/projects/${id}`)
       .then((r) => r.json())
       .then((p) => {
-        form.setFieldsValue({
-          title: p.title,
-          shortDesc: p.shortDesc,
-          problem: p.problem,
-          solution: p.solution,
-          impact: p.impact,
-          techStack: parseJsonArray(p.techStack),
-          category: p.category,
-          featured: p.featured,
-          order: p.order,
-          githubUrl: p.githubUrl ?? "",
-          liveUrl: p.liveUrl ?? "",
-          status: p.status,
+        setForm({
+          title: p.title, shortDesc: p.shortDesc, problem: p.problem, solution: p.solution, impact: p.impact,
+          techStack: parseJsonArray(p.techStack), category: p.category, featured: p.featured, order: p.order,
+          githubUrl: p.githubUrl ?? "", liveUrl: p.liveUrl ?? "", status: p.status,
         })
       })
-      .catch(() => message.error("Failed to load project"))
+      .catch(() => enqueueSnackbar("Failed to load project", { variant: "error" }))
       .finally(() => setLoading(false))
-  }, [id, form, message])
+  }, [id, enqueueSnackbar])
 
-  const onFinish = async (values: ProjectValues) => {
+  const handleSave = async () => {
+    if (!form.title.trim()) {
+      setTitleError(true)
+      return
+    }
     setSaving(true)
     try {
       const res = await fetch(id ? `/api/projects/${id}` : "/api/projects", {
         method: id ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+        body: JSON.stringify(form),
       })
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
         throw new Error(err?.error ?? "Save failed")
       }
-      message.success(id ? "Project updated" : "Project created")
+      enqueueSnackbar(id ? "Project updated" : "Project created", { variant: "success" })
       router.push("/admin/projects")
       router.refresh()
     } catch (e) {
-      message.error(e instanceof Error ? e.message : "Save failed. Check for duplicate title/slug.")
+      enqueueSnackbar(e instanceof Error ? e.message : "Save failed. Check for duplicate title/slug.", { variant: "error" })
     } finally {
       setSaving(false)
     }
@@ -95,86 +88,60 @@ export function ProjectForm({ id }: { id?: string }) {
     if (!id) return
     try {
       await fetch(`/api/projects/${id}`, { method: "DELETE" })
-      message.success("Project deleted")
+      enqueueSnackbar("Project deleted", { variant: "success" })
       router.push("/admin/projects")
       router.refresh()
     } catch {
-      message.error("Failed to delete")
+      enqueueSnackbar("Failed to delete", { variant: "error" })
     }
   }
 
-  if (loading) return <Skeleton active paragraph={{ rows: 10 }} />
+  if (loading) return <Skeleton variant="rectangular" height={500} />
 
   return (
-    <div style={{ maxWidth: 820 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
-        <h1 style={{ fontFamily: "var(--font-display)", fontSize: 32, fontWeight: 700, color: brand.text, margin: 0 }}>
-          {id ? "Edit Project" : "New Project"}
-        </h1>
-        <Space>
-          {id && (
-            <Popconfirm title="Delete this project?" onConfirm={handleDelete} okText="Delete" okButtonProps={{ danger: true }}>
-              <Button danger>Delete</Button>
-            </Popconfirm>
-          )}
-          <Button type="primary" loading={saving} onClick={() => form.submit()}>
-            {id ? "Save" : "Save Project"}
-          </Button>
-        </Space>
-      </div>
+    <Box sx={{ maxWidth: 820 }}>
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3 }}>
+        <Typography variant="h4">{id ? "Edit Project" : "New Project"}</Typography>
+        <Box sx={{ display: "flex", gap: 1.5 }}>
+          {id && <Button color="error" variant="outlined" onClick={() => setConfirmDelete(true)}>Delete</Button>}
+          <Button variant="contained" disabled={saving} onClick={handleSave}>{id ? "Save" : "Save Project"}</Button>
+        </Box>
+      </Box>
 
-      <Card variant="outlined" style={{ borderColor: brand.border }}>
-        <Form form={form} layout="vertical" requiredMark={false} initialValues={initialValues} onFinish={onFinish}>
-          <Form.Item name="title" label="Title" rules={[{ required: true, message: "Title is required" }]}>
-            <Input placeholder="Project name..." />
-          </Form.Item>
-          <Form.Item name="shortDesc" label="Short Description" rules={[{ required: true, message: "A short description is required" }]}>
-            <Input.TextArea rows={2} placeholder="1–2 sentence summary..." />
-          </Form.Item>
-          <Form.Item name="problem" label="Problem">
-            <Input.TextArea rows={3} placeholder="What problem did this solve?" />
-          </Form.Item>
-          <Form.Item name="solution" label="Solution">
-            <Input.TextArea rows={3} placeholder="What did you build?" />
-          </Form.Item>
-          <Form.Item name="impact" label="Impact / Results">
-            <Input.TextArea rows={3} placeholder="Measurable outcomes..." />
-          </Form.Item>
-          <Form.Item name="techStack" label="Tech Stack">
-            <Select mode="tags" tokenSeparators={[","]} placeholder="Next.js, Node.js, PostgreSQL..." />
-          </Form.Item>
-
-          <Row gutter={16}>
-            <Col xs={24} sm={12}>
-              <Form.Item name="category" label="Category">
-                <Select options={CATEGORIES.map((c) => ({ value: c, label: c }))} />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={12}>
-              <Form.Item name="status" label="Status">
-                <Select options={[{ value: "published", label: "Published" }, { value: "draft", label: "Draft" }]} />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row gutter={16}>
-            <Col xs={24} sm={12}>
-              <Form.Item name="githubUrl" label="GitHub URL">
-                <Input placeholder="https://github.com/..." />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={12}>
-              <Form.Item name="liveUrl" label="Live URL">
-                <Input placeholder="https://..." />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Form.Item name="featured" label="Featured project" valuePropName="checked">
-            <Switch />
-          </Form.Item>
-        </Form>
+      <Card sx={{ p: 3, display: "flex", flexDirection: "column", gap: 2.5 }}>
+        <TextField label="Title" value={form.title} onChange={(e) => { set("title", e.target.value); setTitleError(false) }} error={titleError} helperText={titleError ? "Title is required" : ""} required fullWidth />
+        <TextField label="Short Description" value={form.shortDesc} onChange={(e) => set("shortDesc", e.target.value)} multiline rows={2} fullWidth />
+        <TextField label="Problem" value={form.problem} onChange={(e) => set("problem", e.target.value)} multiline rows={3} fullWidth />
+        <TextField label="Solution" value={form.solution} onChange={(e) => set("solution", e.target.value)} multiline rows={3} fullWidth />
+        <TextField label="Impact / Results" value={form.impact} onChange={(e) => set("impact", e.target.value)} multiline rows={3} fullWidth />
+        <Autocomplete
+          multiple freeSolo options={[]} value={form.techStack}
+          onChange={(_, v) => set("techStack", v as string[])}
+          renderInput={(params) => <TextField {...params} label="Tech Stack" placeholder="Add technology…" />}
+        />
+        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2.5 }}>
+          <TextField select label="Category" value={form.category} onChange={(e) => set("category", e.target.value)} fullWidth>
+            {CATEGORIES.map((c) => <MenuItem key={c} value={c}>{c}</MenuItem>)}
+          </TextField>
+          <TextField select label="Status" value={form.status} onChange={(e) => set("status", e.target.value as "published" | "draft")} fullWidth>
+            <MenuItem value="published">Published</MenuItem>
+            <MenuItem value="draft">Draft</MenuItem>
+          </TextField>
+        </Box>
+        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2.5 }}>
+          <TextField label="GitHub URL" value={form.githubUrl} onChange={(e) => set("githubUrl", e.target.value)} fullWidth />
+          <TextField label="Live URL" value={form.liveUrl} onChange={(e) => set("liveUrl", e.target.value)} fullWidth />
+        </Box>
+        <FormControlLabel control={<Switch checked={form.featured} onChange={(e) => set("featured", e.target.checked)} />} label="Featured project" />
       </Card>
-    </div>
+
+      <Dialog open={confirmDelete} onClose={() => setConfirmDelete(false)}>
+        <DialogTitle>Delete this project?</DialogTitle>
+        <DialogActions>
+          <Button onClick={() => setConfirmDelete(false)}>Cancel</Button>
+          <Button color="error" variant="contained" onClick={handleDelete}>Delete</Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   )
 }

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import Link from "next/link"
-import { Button } from "antd"
+import { Button } from "@mui/material"
 import { brand } from "@/lib/theme"
 
 interface Props {
@@ -28,9 +28,9 @@ export default function GlobalError({ error, reset }: Props) {
           An unexpected error occurred. This has been noted. Try refreshing or come back later.
         </p>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16 }}>
-          <Button type="primary" size="large" onClick={reset}>Try Again</Button>
+          <Button variant="contained" size="large" onClick={reset}>Try Again</Button>
           <Link href="/">
-            <Button size="large" style={{ borderColor: brand.border }}>Go Home</Button>
+            <Button variant="outlined" size="large" sx={{ borderColor: brand.border, color: brand.text }}>Go Home</Button>
           </Link>
         </div>
       </div>

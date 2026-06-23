@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Card, Tag } from "antd"
+import { Card, Chip, Box } from "@mui/material"
 import { formatDate, parseJsonArray } from "@/lib/utils"
 import { brand } from "@/lib/theme"
 import type { BlogPost } from "@prisma/client"
@@ -25,12 +25,7 @@ export function BlogCard({ post }: Props) {
 
   return (
     <Link href={`/blog/${post.slug}`} style={{ display: "block", height: "100%" }}>
-      <Card
-        variant="outlined"
-        hoverable
-        style={{ height: "100%", borderTop: `3px solid ${accent}`, borderColor: brand.border }}
-        styles={{ body: { padding: 28 } }}
-      >
+      <Card sx={{ height: "100%", borderTop: `3px solid ${accent}`, p: 3.5, transition: "transform 0.2s ease", "&:hover": { transform: "translateY(-4px)" } }}>
         <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em", color: accent }}>
           {post.category}
         </span>
@@ -39,27 +34,25 @@ export function BlogCard({ post }: Props) {
 
         <p style={{ fontSize: 14, color: brand.textSecondary, marginBottom: 28, lineHeight: 1.6 }}>{post.excerpt}</p>
 
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, color: brand.textMuted, fontFamily: "var(--font-mono)", fontSize: 13 }}>
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, color: brand.textMuted, fontFamily: "var(--font-mono)", fontSize: 13 }}>
             <span>{post.publishedAt ? formatDate(post.publishedAt) : "Draft"}</span>
             <span>•</span>
             <span>{post.readTimeMinutes} min read</span>
-          </div>
+          </Box>
           {post.generatedByAI && (
-            <Tag style={{ margin: 0, fontFamily: "var(--font-mono)", fontSize: 11, background: "rgba(79,70,229,0.1)", color: "#A5B4FC", border: "1px solid rgba(79,70,229,0.25)" }}>
-              AI
-            </Tag>
+            <Chip label="AI" size="small" sx={{ fontFamily: "var(--font-mono)", fontSize: 11, bgcolor: "rgba(79,70,229,0.12)", color: brand.primarySoft, border: "1px solid rgba(79,70,229,0.3)" }} />
           )}
-        </div>
+        </Box>
 
         {tags.length > 0 && (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16, paddingTop: 16, borderTop: `1px solid ${brand.borderSubtle}` }}>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 2, pt: 2, borderTop: `1px solid ${brand.borderSubtle}` }}>
             {tags.slice(0, 3).map((tag) => (
               <span key={tag} style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: brand.textMuted }}>
                 #{tag}
               </span>
             ))}
-          </div>
+          </Box>
         )}
       </Card>
     </Link>

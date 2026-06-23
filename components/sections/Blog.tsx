@@ -1,21 +1,17 @@
 "use client"
 
 import Link from "next/link"
-import { Button, Empty } from "antd"
-import { ArrowRightOutlined } from "@ant-design/icons"
+import { Box, Button, Typography } from "@mui/material"
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
 import { AnimatedSection } from "@/components/shared/AnimatedSection"
 import { SectionHeader } from "@/components/shared/SectionHeader"
 import { BlogCard } from "@/components/blog/BlogCard"
 import { brand } from "@/lib/theme"
 import type { BlogPost } from "@prisma/client"
 
-interface Props {
-  posts: BlogPost[]
-}
-
-export function BlogSection({ posts }: Props) {
+export function BlogSection({ posts }: { posts: BlogPost[] }) {
   return (
-    <section id="blog" style={{ padding: "64px 24px", maxWidth: 1200, margin: "0 auto" }}>
+    <Box component="section" id="blog" sx={{ py: 8, px: 3, maxWidth: 1200, mx: "auto" }}>
       <SectionHeader
         title="Insights & Engineering"
         subtitle="Deep dives into architecture, performance, and the future of web."
@@ -23,26 +19,26 @@ export function BlogSection({ posts }: Props) {
       />
 
       {posts.length === 0 ? (
-        <Empty description="Blog posts coming soon." style={{ padding: "48px 0" }} />
+        <Typography sx={{ textAlign: "center", color: brand.textSecondary, py: 6 }}>Blog posts coming soon.</Typography>
       ) : (
         <>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 24 }}>
+          <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "repeat(3, 1fr)" }, gap: 3 }}>
             {posts.map((post, i) => (
               <AnimatedSection key={post.id} delay={i * 0.1}>
                 <BlogCard post={post} />
               </AnimatedSection>
             ))}
-          </div>
+          </Box>
 
-          <div style={{ textAlign: "center", marginTop: 48 }}>
+          <Box sx={{ textAlign: "center", mt: 6 }}>
             <Link href="/blog">
-              <Button size="large" icon={<ArrowRightOutlined />} iconPosition="end" style={{ borderColor: brand.border }}>
+              <Button variant="outlined" size="large" endIcon={<ArrowForwardIcon />} sx={{ borderColor: brand.border, color: brand.text }}>
                 Read All Posts
               </Button>
             </Link>
-          </div>
+          </Box>
         </>
       )}
-    </section>
+    </Box>
   )
 }

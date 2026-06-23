@@ -1,20 +1,29 @@
 "use client"
 
-import { AntdRegistry } from "@ant-design/nextjs-registry"
-import { App as AntdApp, ConfigProvider } from "antd"
 import type { ReactNode } from "react"
-import { portfolioTheme } from "@/lib/theme"
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter"
+import { ThemeProvider } from "@mui/material/styles"
+import CssBaseline from "@mui/material/CssBaseline"
+import { SnackbarProvider } from "notistack"
+import { theme } from "@/lib/theme"
 
 /**
- * Wraps the app in Ant Design's SSR style registry, the global theme, and the
- * App context (so message/notification/modal hooks work everywhere).
+ * App-wide Material UI setup: emotion SSR cache for the App Router, the global
+ * OLED theme, a baseline reset, and a notistack provider for toasts.
  */
 export function Providers({ children }: { children: ReactNode }) {
   return (
-    <AntdRegistry>
-      <ConfigProvider theme={portfolioTheme}>
-        <AntdApp component={false}>{children}</AntdApp>
-      </ConfigProvider>
-    </AntdRegistry>
+    <AppRouterCacheProvider options={{ key: "mui" }}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <SnackbarProvider
+          maxSnack={3}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          autoHideDuration={4000}
+        >
+          {children}
+        </SnackbarProvider>
+      </ThemeProvider>
+    </AppRouterCacheProvider>
   )
 }

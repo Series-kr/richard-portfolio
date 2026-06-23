@@ -3,101 +3,108 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Table, Tag, Button, Space, Popconfirm, App } from "antd"
-import { EditOutlined, ExportOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons"
-import type { ColumnsType } from "antd/es/table"
+import { Box, Button, Chip, IconButton, Typography, Dialog, DialogTitle, DialogActions } from "@mui/material"
+import { DataGrid, type GridColDef } from "@mui/x-data-grid"
+import EditIcon from "@mui/icons-material/Edit"
+import OpenInNewIcon from "@mui/icons-material/OpenInNew"
+import DeleteIcon from "@mui/icons-material/Delete"
+import AddIcon from "@mui/icons-material/Add"
+import { useSnackbar } from "notistack"
 import type { BlogPost } from "@prisma/client"
 import { formatDate } from "@/lib/utils"
 import { brand } from "@/lib/theme"
 
 export function BlogTable({ posts }: { posts: BlogPost[] }) {
   const router = useRouter()
-  const { message } = App.useApp()
-  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const { enqueueSnackbar } = useSnackbar()
+  const [pendingDelete, setPendingDelete] = useState<BlogPost | null>(null)
+  const [deleting, setDeleting] = useState(false)
+  const published = posts.filter((p) => p.published).length
 
-  const handleDelete = async (id: string) => {
-    setDeletingId(id)
+  const handleDelete = async () => {
+    if (!pendingDelete) return
+    setDeleting(true)
     try {
-      const res = await fetch(`/api/blog/${id}`, { method: "DELETE" })
+      const res = await fetch(`/api/blog/${pendingDelete.id}`, { method: "DELETE" })
       if (!res.ok) throw new Error()
-      message.success("Post deleted")
+      enqueueSnackbar("Post deleted", { variant: "success" })
       router.refresh()
     } catch {
-      message.error("Failed to delete post")
+      enqueueSnackbar("Failed to delete post", { variant: "error" })
     } finally {
-      setDeletingId(null)
+      setDeleting(false)
+      setPendingDelete(null)
     }
   }
 
-  const columns: ColumnsType<BlogPost> = [
+  const columns: GridColDef<BlogPost>[] = [
     {
-      title: "Title",
-      dataIndex: "title",
-      render: (_, p) => (
-        <div>
-          <span style={{ fontWeight: 600, color: brand.text }}>{p.title}</span>
-          {p.generatedByAI && <Tag style={{ marginLeft: 8, fontFamily: "var(--font-mono)", fontSize: 10 }} color="processing">AI</Tag>}
-        </div>
+      field: "title",
+      headerName: "Title",
+      flex: 1.8,
+      minWidth: 220,
+      renderCell: (p) => (
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Typography sx={{ fontWeight: 600, color: brand.text, fontSize: 14 }}>{p.row.title}</Typography>
+          {p.row.generatedByAI && <Chip label="AI" size="small" color="primary" variant="outlined" sx={{ height: 18, fontSize: 10 }} />}
+        </Box>
       ),
     },
-    { title: "Category", dataIndex: "category", render: (c: string) => <Tag color="processing">{c}</Tag> },
+    { field: "category", headerName: "Category", flex: 0.8, minWidth: 120, renderCell: (p) => <Chip label={p.row.category} size="small" color="primary" variant="outlined" /> },
+    { field: "published", headerName: "Status", flex: 0.7, minWidth: 110, renderCell: (p) => <Chip label={p.row.published ? "Published" : "Draft"} size="small" color={p.row.published ? "success" : "default"} variant="outlined" /> },
+    { field: "views", headerName: "Views", flex: 0.5, minWidth: 80 },
     {
-      title: "Status",
-      dataIndex: "published",
-      render: (published: boolean) => <Tag color={published ? "success" : "default"}>{published ? "Published" : "Draft"}</Tag>,
-      filters: [
-        { text: "Published", value: true },
-        { text: "Draft", value: false },
-      ],
-      onFilter: (value, p) => p.published === value,
-    },
-    { title: "Views", dataIndex: "views", sorter: (a, b) => a.views - b.views },
-    {
-      title: "Date",
-      key: "date",
-      render: (_, p) => (
-        <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: brand.textMuted }}>
-          {p.publishedAt ? formatDate(p.publishedAt) : formatDate(p.createdAt)}
-        </span>
-      ),
+      field: "date",
+      headerName: "Date",
+      flex: 0.8,
+      minWidth: 120,
+      valueGetter: (_v, row) => (row.publishedAt ? formatDate(row.publishedAt) : formatDate(row.createdAt)),
     },
     {
-      title: "Actions",
-      key: "actions",
-      render: (_, p) => (
-        <Space>
-          <Link href={`/admin/blog/${p.id}`}>
-            <Button size="small" icon={<EditOutlined />}>Edit</Button>
-          </Link>
-          {p.published && (
-            <Link href={`/blog/${p.slug}`} target="_blank">
-              <Button size="small" type="text" icon={<ExportOutlined />} />
-            </Link>
+      field: "actions",
+      headerName: "Actions",
+      flex: 1,
+      minWidth: 150,
+      sortable: false,
+      filterable: false,
+      renderCell: (p) => (
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+          <Button size="small" startIcon={<EditIcon />} component={Link} href={`/admin/blog/${p.row.id}`}>Edit</Button>
+          {p.row.published && (
+            <IconButton size="small" component={Link} href={`/blog/${p.row.slug}`} target="_blank"><OpenInNewIcon fontSize="small" /></IconButton>
           )}
-          <Popconfirm title="Delete this post?" onConfirm={() => handleDelete(p.id)} okText="Delete" okButtonProps={{ danger: true }}>
-            <Button size="small" danger type="text" icon={<DeleteOutlined />} loading={deletingId === p.id} />
-          </Popconfirm>
-        </Space>
+          <IconButton size="small" color="error" onClick={() => setPendingDelete(p.row)}><DeleteIcon fontSize="small" /></IconButton>
+        </Box>
       ),
     },
   ]
 
-  const published = posts.filter((p) => p.published).length
-
   return (
-    <div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center", justifyContent: "space-between", marginBottom: 32 }}>
-        <div>
-          <h1 style={{ fontFamily: "var(--font-display)", fontSize: 32, fontWeight: 700, color: brand.text, margin: 0 }}>Blog Posts</h1>
-          <p style={{ fontSize: 14, color: brand.textSecondary, marginTop: 4 }}>
-            {published} published · {posts.length - published} drafts
-          </p>
-        </div>
-        <Link href="/admin/blog/new">
-          <Button type="primary" icon={<PlusOutlined />}>New Post</Button>
-        </Link>
-      </div>
-      <Table rowKey="id" columns={columns} dataSource={posts} pagination={{ pageSize: 10, hideOnSinglePage: true }} scroll={{ x: "max-content" }} />
-    </div>
+    <Box>
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, alignItems: "center", justifyContent: "space-between", mb: 4 }}>
+        <Box>
+          <Typography variant="h4">Blog Posts</Typography>
+          <Typography sx={{ fontSize: 14, color: brand.textSecondary, mt: 0.5 }}>{published} published · {posts.length - published} drafts</Typography>
+        </Box>
+        <Button variant="contained" startIcon={<AddIcon />} component={Link} href="/admin/blog/new">New Post</Button>
+      </Box>
+
+      <DataGrid
+        rows={posts}
+        columns={columns}
+        initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
+        pageSizeOptions={[10, 25, 50]}
+        disableRowSelectionOnClick
+        sx={{ border: `1px solid ${brand.border}` }}
+      />
+
+      <Dialog open={!!pendingDelete} onClose={() => setPendingDelete(null)}>
+        <DialogTitle>Delete this post?</DialogTitle>
+        <DialogActions>
+          <Button onClick={() => setPendingDelete(null)}>Cancel</Button>
+          <Button color="error" variant="contained" onClick={handleDelete} disabled={deleting}>Delete</Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   )
 }

@@ -1,9 +1,11 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Table, Button, Switch, Tag, Alert, App } from "antd"
-import { SyncOutlined, StarFilled } from "@ant-design/icons"
-import type { ColumnsType } from "antd/es/table"
+import { Box, Button, Switch, Chip, Alert, Typography } from "@mui/material"
+import { DataGrid, type GridColDef } from "@mui/x-data-grid"
+import SyncIcon from "@mui/icons-material/Sync"
+import StarIcon from "@mui/icons-material/Star"
+import { useSnackbar } from "notistack"
 import { brand } from "@/lib/theme"
 
 interface Repo {
@@ -20,7 +22,7 @@ interface Repo {
 }
 
 export default function AdminGithubPage() {
-  const { message } = App.useApp()
+  const { enqueueSnackbar } = useSnackbar()
   const [repos, setRepos] = useState<Repo[]>([])
   const [syncing, setSyncing] = useState(false)
   const [syncResult, setSyncResult] = useState<{ synced: number; total: number } | null>(null)
@@ -49,9 +51,9 @@ export default function AdminGithubPage() {
       const result = await res.json()
       setSyncResult(result)
       await loadRepos()
-      message.success(`Synced ${result.synced} of ${result.total} repos`)
+      enqueueSnackbar(`Synced ${result.synced} of ${result.total} repos`, { variant: "success" })
     } catch {
-      message.error("Sync failed")
+      enqueueSnackbar("Sync failed", { variant: "error" })
     } finally {
       setSyncing(false)
     }
@@ -67,53 +69,63 @@ export default function AdminGithubPage() {
       })
     } catch {
       setRepos((prev) => prev.map((r) => (r.id === id ? { ...r, [field]: !value } : r)))
-      message.error("Update failed")
+      enqueueSnackbar("Update failed", { variant: "error" })
     }
   }
 
-  const columns: ColumnsType<Repo> = [
+  const columns: GridColDef<Repo>[] = [
     {
-      title: "Repository",
-      dataIndex: "name",
-      render: (_, r) => (
-        <div>
-          <a href={r.url} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 600, color: brand.text }}>
-            {r.name}
-          </a>
-          {r.description && <div style={{ fontSize: 12, color: brand.textMuted }}>{r.description}</div>}
-        </div>
+      field: "name",
+      headerName: "Repository",
+      flex: 1.6,
+      minWidth: 220,
+      renderCell: (p) => (
+        <Box sx={{ lineHeight: 1.3, py: 1 }}>
+          <a href={p.row.url} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 600, color: brand.text }}>{p.row.name}</a>
+          {p.row.description && <Typography sx={{ fontSize: 12, color: brand.textMuted }}>{p.row.description}</Typography>}
+        </Box>
       ),
     },
-    { title: "Language", dataIndex: "language", render: (l: string | null) => (l ? <Tag>{l}</Tag> : <span style={{ color: brand.textMuted }}>—</span>) },
+    { field: "language", headerName: "Language", flex: 0.7, minWidth: 110, renderCell: (p) => (p.row.language ? <Chip label={p.row.language} size="small" /> : <span style={{ color: brand.textMuted }}>—</span>) },
     {
-      title: "Stars",
-      dataIndex: "stars",
-      sorter: (a, b) => a.stars - b.stars,
-      render: (s: number) => (
-        <span style={{ fontFamily: "var(--font-mono)" }}>
-          <StarFilled style={{ color: "#F5A623" }} /> {s}
+      field: "stars",
+      headerName: "Stars",
+      flex: 0.5,
+      minWidth: 90,
+      renderCell: (p) => (
+        <span style={{ fontFamily: "var(--font-mono)", display: "inline-flex", alignItems: "center", gap: 4 }}>
+          <StarIcon sx={{ color: "#F5A623", fontSize: 16 }} /> {p.row.stars}
         </span>
       ),
     },
-    { title: "Show on Site", dataIndex: "showOnSite", render: (v: boolean, r) => <Switch checked={v} onChange={(c) => toggleRepo(r.id, "showOnSite", c)} /> },
-    { title: "Pinned", dataIndex: "pinned", render: (v: boolean, r) => <Switch checked={v} onChange={(c) => toggleRepo(r.id, "pinned", c)} /> },
+    { field: "showOnSite", headerName: "Show on Site", flex: 0.7, minWidth: 120, sortable: false, renderCell: (p) => <Switch checked={p.row.showOnSite} onChange={(e) => toggleRepo(p.row.id, "showOnSite", e.target.checked)} /> },
+    { field: "pinned", headerName: "Pinned", flex: 0.5, minWidth: 90, sortable: false, renderCell: (p) => <Switch checked={p.row.pinned} onChange={(e) => toggleRepo(p.row.id, "pinned", e.target.checked)} /> },
   ]
 
   return (
-    <div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center", justifyContent: "space-between", marginBottom: 32 }}>
-        <div>
-          <h1 style={{ fontFamily: "var(--font-display)", fontSize: 32, fontWeight: 700, color: brand.text, margin: 0 }}>GitHub Sync</h1>
-          <p style={{ fontSize: 14, color: brand.textSecondary, marginTop: 4 }}>Manage which repositories show on your portfolio.</p>
-        </div>
-        <Button type="primary" icon={<SyncOutlined spin={syncing} />} loading={syncing} onClick={handleSync}>
-          Sync from GitHub
+    <Box>
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, alignItems: "center", justifyContent: "space-between", mb: 4 }}>
+        <Box>
+          <Typography variant="h4">GitHub Sync</Typography>
+          <Typography sx={{ fontSize: 14, color: brand.textSecondary, mt: 0.5 }}>Manage which repositories show on your portfolio.</Typography>
+        </Box>
+        <Button variant="contained" startIcon={<SyncIcon className={syncing ? "spin" : undefined} />} disabled={syncing} onClick={handleSync}>
+          {syncing ? "Syncing…" : "Sync from GitHub"}
         </Button>
-      </div>
+      </Box>
 
-      {syncResult && <Alert type="success" showIcon style={{ marginBottom: 16 }} message={`Synced ${syncResult.synced} of ${syncResult.total} repos`} />}
+      {syncResult && <Alert severity="success" sx={{ mb: 2 }}>{`Synced ${syncResult.synced} of ${syncResult.total} repos`}</Alert>}
 
-      <Table rowKey="id" loading={loading} columns={columns} dataSource={repos} pagination={{ pageSize: 12, hideOnSinglePage: true }} scroll={{ x: "max-content" }} />
-    </div>
+      <DataGrid
+        rows={repos}
+        columns={columns}
+        loading={loading}
+        getRowHeight={() => "auto"}
+        initialState={{ pagination: { paginationModel: { pageSize: 12 } } }}
+        pageSizeOptions={[12, 25, 50]}
+        disableRowSelectionOnClick
+        sx={{ border: `1px solid ${brand.border}`, "& .MuiDataGrid-cell": { display: "flex", alignItems: "center" } }}
+      />
+    </Box>
   )
 }

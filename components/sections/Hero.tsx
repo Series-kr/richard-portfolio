@@ -2,8 +2,8 @@
 
 import { motion } from "framer-motion"
 import Link from "next/link"
-import { Button } from "antd"
-import { ArrowRightOutlined } from "@ant-design/icons"
+import { Button } from "@mui/material"
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBriefcase, faChevronDown } from "@fortawesome/free-solid-svg-icons"
 import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons"
@@ -139,16 +139,12 @@ export function Hero() {
           }}
         >
           <Link href="#projects">
-            <Button
-              type="primary"
-              size="large"
-              icon={<FontAwesomeIcon icon={faBriefcase} />}
-            >
+            <Button variant="contained" size="large" startIcon={<FontAwesomeIcon icon={faBriefcase} />}>
               See My Work
             </Button>
           </Link>
           <Link href="/#contact">
-            <Button size="large" icon={<ArrowRightOutlined />} iconPosition="end">
+            <Button variant="outlined" size="large" endIcon={<ArrowForwardIcon />} sx={{ borderColor: brand.border, color: brand.text }}>
               Get In Touch
             </Button>
           </Link>
