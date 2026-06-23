@@ -39,7 +39,15 @@ export default function AdminLoginPage() {
           </p>
         </Box>
 
-        <Card sx={{ p: 4 }}>
+        <Card
+          sx={{
+            p: 4,
+            bgcolor: brand.bgElevated,
+            border: `1px solid ${brand.border}`,
+            borderRadius: 3,
+            boxShadow: "0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(230,180,80,0.06), inset 0 1px 0 rgba(255,255,255,0.04)",
+          }}
+        >
           {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
           <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
             <TextField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" fullWidth required />

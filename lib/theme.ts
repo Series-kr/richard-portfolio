@@ -7,10 +7,10 @@ import { createTheme } from "@mui/material/styles"
  */
 export const brand = {
   bgBase: "#08090A",
-  bgContainer: "#0F1011",
-  bgElevated: "#16181B",
-  border: "#23252A",
-  borderSubtle: "#18191C",
+  bgContainer: "#141519",
+  bgElevated: "#1C1E23",
+  border: "#2C2F36",
+  borderSubtle: "#1E2025",
   primary: "#E6B450",
   primaryHover: "#F0C66B",
   primarySoft: "#F2D08A",
@@ -56,6 +56,7 @@ export const theme = createTheme({
           backgroundColor: brand.bgContainer,
           backgroundImage: "none",
           border: `1px solid ${brand.border}`,
+          boxShadow: "0 1px 2px rgba(0,0,0,0.4)",
           transition: "border-color 0.2s ease, background-color 0.2s ease",
         },
       },
@@ -85,7 +86,16 @@ export const theme = createTheme({
       },
     },
     MuiAppBar: { styleOverrides: { root: { backgroundImage: "none" } } },
-    MuiOutlinedInput: { styleOverrides: { root: { backgroundColor: brand.bgBase } } },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          backgroundColor: brand.bgBase,
+          "& .MuiOutlinedInput-notchedOutline": { borderColor: brand.border },
+          "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: brand.textMuted },
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: brand.primary, borderWidth: 1 },
+        },
+      },
+    },
     MuiChip: { styleOverrides: { root: { fontWeight: 500 } } },
     MuiLink: { defaultProps: { underline: "none" } },
   },

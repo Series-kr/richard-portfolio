@@ -1,9 +1,9 @@
 :root {
   --bg-base: #08090A;
-  --bg-container: #0F1011;
-  --bg-elevated: #16181B;
-  --border: #23252A;
-  --border-subtle: #18191C;
+  --bg-container: #141519;
+  --bg-elevated: #1C1E23;
+  --border: #2C2F36;
+  --border-subtle: #1E2025;
   --primary: #E6B450;
   --primary-soft: #F2D08A;
   --success: #4CC38A;
