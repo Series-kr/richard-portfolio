@@ -28,7 +28,7 @@ export function Hero() {
         padding: "0 24px",
       }}
     >
-      <div className="grid-bg" style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />
+      <div className="grid-bg grid-fade" style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />
       <div
         style={{
           position: "absolute",

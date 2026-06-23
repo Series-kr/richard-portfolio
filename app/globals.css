@@ -51,12 +51,16 @@ a {
   text-decoration: none;
 }
 
-/* Signature: Linear-style faint engineering grid for the hero */
+/* Signature: Linear-style faint engineering grid.
+   NOTE: no mask here — `mask-image` would clip child content, not just the
+   grid. Use `.grid-fade` on a dedicated background-only layer for the fade. */
 .grid-bg {
   background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
   background-size: 56px 56px;
+}
+.grid-fade {
   -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 35%, transparent 100%);
   mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 35%, transparent 100%);
 }

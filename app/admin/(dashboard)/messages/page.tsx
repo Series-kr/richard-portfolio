@@ -5,7 +5,7 @@ import { brand } from "@/lib/theme"
 export const dynamic = "force-dynamic"
 
 export default async function AdminMessagesPage() {
-  const messages = await prisma.contactMessage.findMany({ orderBy: { createdAt: "desc" } })
+  const messages = await prisma.contactMessage.findMany({ orderBy: { createdAt: "desc" } }).catch(() => [])
   const unread = messages.filter((m) => !m.read).length
 
   return (
